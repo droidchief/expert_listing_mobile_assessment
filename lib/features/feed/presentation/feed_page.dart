@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import 'cubit/feed_preview_cubit.dart';
@@ -21,35 +22,28 @@ class FeedPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SvgPicture.asset(
-                'assets/images/logo_green.svg',
-                width: AppSpacing.iconNav,
-                height: AppSpacing.iconNav,
+                'assets/images/logo_with_name.svg',
+                width: AppSpacing.iconAction,
+                height: AppSpacing.iconAction,
               ),
               const SizedBox(width: AppSpacing.s),
-              Text('Expert Listing', style: AppTypography.appTitle),
             ],
           ),
           centerTitle: false,
           actions: [
-            IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/envelope.svg',
-                width: AppSpacing.iconAction,
-                height: AppSpacing.iconAction,
-              ),
-              onPressed: () {},
+            _CircularActionButton(
+              assetPath: 'assets/images/envelope.svg',
               tooltip: 'Messages',
+              onTap: () {},
             ),
+            _CircularActionButton(
+              assetPath: 'assets/images/plus.svg',
+              tooltip: 'Add',
+              onTap: () {},
+            ),
+            
+              const SizedBox(width: AppSpacing.s),
 
-             IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/plus.svg',
-                width: AppSpacing.iconAction,
-                height: AppSpacing.iconAction,
-              ),
-              onPressed: () {},
-              tooltip: 'Messages',
-            ),
           ],
         ),
         body: BlocBuilder<FeedPreviewCubit, FeedPreviewState>(
@@ -68,6 +62,49 @@ class FeedPage extends StatelessWidget {
                 ),
             };
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _CircularActionButton extends StatelessWidget {
+  const _CircularActionButton({
+    required this.assetPath,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final String assetPath;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  static const double _size = 46;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      child: Tooltip(
+        message: tooltip,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: Container(
+            width: _size,
+            height: _size,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.border),
+              color: AppColors.overlayScrim.withValues(alpha: 0.02),
+            ),
+            child: SvgPicture.asset(
+              assetPath,
+              width: AppSpacing.iconAction,
+              height: AppSpacing.iconAction,
+            ),
+          ),
         ),
       ),
     );
