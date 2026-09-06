@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/feed/presentation/feed_page.dart';
 import '../../features/shell/presentation/placeholder_tab_page.dart';
 import '../../features/shell/presentation/scaffold_with_nav_bar.dart';
+import '../../features/stories/presentation/screens/story_viewer_screen.dart';
 import 'routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -70,6 +71,28 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: AppRoutes.storyViewer,
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) {
+        final int groupIndex =
+            int.parse(state.pathParameters['groupIndex']!);
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: StoryViewerScreen(initialGroupIndex: groupIndex),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final Animation<Offset> slide = Tween(
+              begin: const Offset(0, 0.08),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(position: slide, child: child),
+            );
+          },
+        );
+      },
     ),
   ],
 );

@@ -31,4 +31,8 @@ abstract final class AppSpacing {
   static const double mediaDot = 6;
   static const double mediaDotActive = 8;
   static const double mediaDotGap = 3;
+
+  static const double storiesRailHeight = 112;
+  static const double storyBadgeSize = 20;
+  static const double storyHeaderAvatar = 32;
 }

@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
+import '../../stories/presentation/widgets/stories_rail.dart';
 import 'cubit/feed_preview_cubit.dart';
 import 'cubit/feed_preview_state.dart';
 import 'widgets/post_card.dart';
@@ -46,22 +46,32 @@ class FeedPage extends StatelessWidget {
 
           ],
         ),
-        body: BlocBuilder<FeedPreviewCubit, FeedPreviewState>(
-          builder: (context, state) {
-            return switch (state.status) {
-              FeedPreviewStatus.initial ||
-              FeedPreviewStatus.loading =>
-                const Center(child: CircularProgressIndicator()),
-              FeedPreviewStatus.failure => Center(
-                  child: Text(state.failureMessage ?? 'Failed to load posts'),
-                ),
-              FeedPreviewStatus.success => ListView.builder(
-                  itemCount: state.posts.length,
-                  itemBuilder: (context, index) =>
-                      PostCard(post: state.posts[index]),
-                ),
-            };
-          },
+        body: Column(
+          children: [
+            const StoriesRail(),
+            const StoriesRailDivider(),
+            Expanded(
+              child: BlocBuilder<FeedPreviewCubit, FeedPreviewState>(
+                builder: (context, state) {
+                  return switch (state.status) {
+                    FeedPreviewStatus.initial ||
+                    FeedPreviewStatus.loading =>
+                      const Center(child: CircularProgressIndicator()),
+                    FeedPreviewStatus.failure => Center(
+                        child: Text(
+                          state.failureMessage ?? 'Failed to load posts',
+                        ),
+                      ),
+                    FeedPreviewStatus.success => ListView.builder(
+                        itemCount: state.posts.length,
+                        itemBuilder: (context, index) =>
+                            PostCard(post: state.posts[index]),
+                      ),
+                  };
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

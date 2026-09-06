@@ -94,6 +94,21 @@ abstract final class AppTypography {
     color: AppColors.textSecondary,
   );
 
+  // In the story viewer header — fixed white, sits on a photo, not a surface.
+  static const TextStyle storyUsername = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.overlayContent,
+  );
+
+  static const TextStyle storyMeta = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: AppColors.overlayContent,
+  );
+
   // On the media overlay duration badge — fixed white, not theme-driven.
   static const TextStyle durationBadge = TextStyle(
     fontFamily: _fontFamily,
