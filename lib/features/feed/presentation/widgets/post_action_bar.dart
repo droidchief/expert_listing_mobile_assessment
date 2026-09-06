@@ -7,13 +7,15 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/count_text.dart';
+import '../../../comments/presentation/widgets/comments_sheet.dart';
 import '../../data/models/post.dart';
 import '../cubit/feed_cubit.dart';
 
 /// Like / comment / share, then a spacer, then views and bookmark.
 ///
-/// Like is wired to the API (optimistic, via `FeedCubit`); comment, share
-/// and bookmark stay inert — out of scope for this part.
+/// Like and comment are wired to the API (like optimistic via `FeedCubit`,
+/// comments via their own sheet + `CommentsCubit`); share and bookmark stay
+/// inert — out of scope for this part.
 class PostActionBar extends StatelessWidget {
   const PostActionBar({super.key, required this.post});
 
@@ -35,6 +37,16 @@ class PostActionBar extends StatelessWidget {
             icon: Icons.mode_comment_outlined,
             count: post.counts.comments,
             semanticLabel: 'Comments',
+            onTap: () {
+              final feedCubit = context.read<FeedCubit>();
+              showCommentsSheet(
+                context,
+                postId: post.id,
+                initialCommentCount: post.counts.comments,
+                onCommentCountChanged: (count) =>
+                    feedCubit.updateCommentCount(post.id, count),
+              );
+            },
           ),
           const AppIconButton(
             icon: Icons.send_outlined,

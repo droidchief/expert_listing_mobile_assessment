@@ -35,4 +35,12 @@ abstract final class AppSpacing {
   static const double storiesRailHeight = 112;
   static const double storyBadgeSize = 20;
   static const double storyHeaderAvatar = 32;
+
+  static const double avatarCommentRoot = 32;
+  static const double avatarCommentReply = 24;
+  static const double avatarCommentInput = 28;
+  static const double commentReplyIndent = 40;
+  static const double sendButtonSize = 36;
+  static const double grabHandleWidth = 40;
+  static const double grabHandleHeight = 4;
 }

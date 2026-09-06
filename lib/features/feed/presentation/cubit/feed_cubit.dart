@@ -193,6 +193,19 @@ class FeedCubit extends Cubit<FeedState> {
 
   void clearActionFailure() => emit(state.copyWith(clearActionFailure: true));
 
+  /// Pushed by the comments sheet after a successful send — the post's new
+  /// total from the API, so the card behind the sheet updates without a
+  /// refetch.
+  void updateCommentCount(String postId, int commentCount) {
+    final int index = state.posts.indexWhere((p) => p.id == postId);
+    if (index == -1) return;
+    final posts = [...state.posts];
+    posts[index] = posts[index].copyWith(
+      counts: posts[index].counts.copyWith(comments: commentCount),
+    );
+    emit(state.copyWith(posts: posts));
+  }
+
   @override
   Future<void> close() {
     for (final timer in _likeTimers.values) {
