@@ -51,7 +51,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
             color: AppColors.surface,
             border: Border(top: BorderSide(color: AppColors.divider)),
           ),
-          height: 60,
+          // No fixed height — the nav bar must grow with the label text at
+          // larger accessibility text scales rather than overflow.
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
           child: Row(
             children: [
               for (int index = 0; index < _items.length; index++)
@@ -105,6 +107,7 @@ class _NavItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (data.isCenter)

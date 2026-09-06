@@ -25,4 +25,10 @@ abstract final class AppSpacing {
   static const double iconAction = 22;
   static const double iconNav = 24;
   static const double iconLocation = 14;
+
+  static const double mediaPlayButton = 56;
+  static const double mediaPlayIcon = 32;
+  static const double mediaDot = 6;
+  static const double mediaDotActive = 8;
+  static const double mediaDotGap = 3;
 }

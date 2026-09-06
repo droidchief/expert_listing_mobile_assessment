@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Every colour used across the app lives here. No widget should ever
 /// contain a hex literal — read from these tokens instead.
 abstract final class AppColors {
-  static const Color primary = Color(0xFF0B7A43);
+  static const Color primary = Color(0xFF105B48);
   static const Color primaryContainer = Color(0xFFE6F4EC);
 
   static const Color storyRingUnseen = Color(0xFF3FA34D);
@@ -25,4 +25,9 @@ abstract final class AppColors {
 
   static const Color likeActive = Color(0xFFEF4444);
   static const Color error = Color(0xFFDC2626);
+
+  // Overlay on top of media (video play button, duration badge) — fixed
+  // black/white regardless of theme, since it sits on a photo, not a surface.
+  static const Color overlayScrim = Color(0xFF000000);
+  static const Color overlayContent = Color(0xFFFFFFFF);
 }

@@ -93,4 +93,12 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
   );
+
+  // On the media overlay duration badge — fixed white, not theme-driven.
+  static const TextStyle durationBadge = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.overlayContent,
+  );
 }
