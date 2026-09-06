@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/app_icon_button.dart';
+import '../../../../core/widgets/count_text.dart';
 import '../../data/models/post.dart';
+import '../cubit/feed_cubit.dart';
 
 /// Like / comment / share, then a spacer, then views and bookmark.
 ///
-/// No taps do anything yet — M7 wires like; share and bookmark stay inert.
+/// Like is wired to the API (optimistic, via `FeedCubit`); comment, share
+/// and bookmark stay inert — out of scope for this part.
 class PostActionBar extends StatelessWidget {
   const PostActionBar({super.key, required this.post});
 
@@ -17,7 +21,6 @@ class PostActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasLiked = post.viewerState.hasLiked;
     final String views = formatViewCount(post.counts.views);
 
     return Padding(
@@ -27,12 +30,7 @@ class PostActionBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          AppIconButton(
-            icon: hasLiked ? Icons.favorite : Icons.favorite_border,
-            color: hasLiked ? AppColors.likeActive : AppColors.iconDefault,
-            count: post.counts.likes,
-            semanticLabel: 'Like',
-          ),
+          _LikeButton(post: post),
           AppIconButton(
             icon: Icons.mode_comment_outlined,
             count: post.counts.comments,
@@ -53,6 +51,80 @@ class PostActionBar extends StatelessWidget {
             semanticLabel: 'Bookmark',
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The heart button: mirrors `AppIconButton`'s layout (44x44 tap target,
+/// same icon size, `CountText`) but adds a brief 1.0 → 1.25 → 1.0 scale
+/// bump whenever `hasLiked` flips, in either direction. Purely a local
+/// ephemeral animation, so a `StatefulWidget` is correct here.
+class _LikeButton extends StatefulWidget {
+  const _LikeButton({required this.post});
+
+  final Post post;
+
+  @override
+  State<_LikeButton> createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<_LikeButton> {
+  static const double _minTapTarget = 44;
+  static const Duration _bumpLeg = Duration(milliseconds: 90);
+
+  double _scale = 1.0;
+
+  @override
+  void didUpdateWidget(covariant _LikeButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.viewerState.hasLiked != widget.post.viewerState.hasLiked) {
+      setState(() => _scale = 1.25);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool hasLiked = widget.post.viewerState.hasLiked;
+    final int likes = widget.post.counts.likes;
+
+    return Semantics(
+      button: true,
+      label: likes > 0 ? 'Like, $likes' : 'Like',
+      child: InkWell(
+        onTap: () => context.read<FeedCubit>().toggleLike(widget.post.id),
+        customBorder: const CircleBorder(),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: _minTapTarget,
+            minHeight: _minTapTarget,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedScale(
+                  scale: _scale,
+                  duration: _bumpLeg,
+                  curve: Curves.easeOutBack,
+                  onEnd: () {
+                    if (_scale != 1.0) setState(() => _scale = 1.0);
+                  },
+                  child: Icon(
+                    hasLiked ? Icons.favorite : Icons.favorite_border,
+                    size: AppSpacing.iconAction,
+                    color: hasLiked ? AppColors.likeActive : AppColors.iconDefault,
+                  ),
+                ),
+                if (likes > 0) ...[
+                  const SizedBox(width: AppSpacing.xs),
+                  CountText(likes),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

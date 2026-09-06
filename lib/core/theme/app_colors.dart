@@ -30,4 +30,8 @@ abstract final class AppColors {
   // black/white regardless of theme, since it sits on a photo, not a surface.
   static const Color overlayScrim = Color(0xFF000000);
   static const Color overlayContent = Color(0xFFFFFFFF);
+
+  // Shimmer loading skeletons.
+  static const Color skeletonBase = Color(0xFFECECEC);
+  static const Color skeletonHighlight = Color(0xFFF7F7F7);
 }
