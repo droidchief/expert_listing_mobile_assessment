@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../../filters/domain/feed_filter.dart';
 import '../../data/feed_repository.dart';
 import '../../data/models/liked_by_preview.dart';
 import '../../data/models/liked_by_user.dart';
@@ -14,6 +15,10 @@ class FeedCubit extends Cubit<FeedState> {
   FeedCubit(this._repository) : super(const FeedState());
 
   final FeedRepository _repository;
+
+  // The currently applied filter — kept in sync with `FeedFilterCubit` by
+  // the feed screen and sent alongside every fetch, including pagination.
+  FeedFilter _filter = FeedFilter.empty;
 
   // The seeded current user. A proper `/me` call replaces this later.
   static const String _currentUsername = 'miracle.h';
@@ -31,7 +36,7 @@ class FeedCubit extends Cubit<FeedState> {
   Future<void> loadInitial() async {
     emit(state.copyWith(status: FeedStatus.loading, clearFailure: true));
     try {
-      final page = await _repository.getFeed();
+      final page = await _repository.getFeed(filter: _filter);
       emit(state.copyWith(
         status: FeedStatus.success,
         posts: page.data,
@@ -56,7 +61,10 @@ class FeedCubit extends Cubit<FeedState> {
     }
     emit(state.copyWith(isLoadingMore: true, clearLoadMoreFailure: true));
     try {
-      final page = await _repository.getFeed(cursor: state.nextCursor);
+      final page = await _repository.getFeed(
+        cursor: state.nextCursor,
+        filter: _filter,
+      );
       emit(state.copyWith(
         posts: [...state.posts, ...page.data],
         nextCursor: page.pagination.nextCursor,
@@ -74,7 +82,7 @@ class FeedCubit extends Cubit<FeedState> {
   Future<void> refresh() async {
     emit(state.copyWith(isRefreshing: true, clearLoadMoreFailure: true));
     try {
-      final page = await _repository.getFeed();
+      final page = await _repository.getFeed(filter: _filter);
       emit(state.copyWith(
         status: FeedStatus.success,
         posts: page.data,
@@ -95,6 +103,33 @@ class FeedCubit extends Cubit<FeedState> {
   Future<void> retryLoadMore() async {
     emit(state.copyWith(clearLoadMoreFailure: true));
     await loadMore();
+  }
+
+  /// Mixing filtered and unfiltered results is a correctness bug, not a
+  /// rendering detail — so this replaces `posts` outright rather than
+  /// merging, and resets pagination from scratch.
+  Future<void> applyFilter(FeedFilter filter) async {
+    _filter = filter;
+    emit(state.copyWith(
+      status: FeedStatus.loading,
+      posts: const [],
+      clearNextCursor: true,
+      hasMore: true,
+      clearFailure: true,
+      clearLoadMoreFailure: true,
+    ));
+    try {
+      final page = await _repository.getFeed(filter: _filter);
+      emit(state.copyWith(
+        status: FeedStatus.success,
+        posts: page.data,
+        nextCursor: page.pagination.nextCursor,
+        clearNextCursor: page.pagination.nextCursor == null,
+        hasMore: page.pagination.hasMore,
+      ));
+    } on Failure catch (f) {
+      emit(state.copyWith(status: FeedStatus.failure, failure: f));
+    }
   }
 
   /// Optimistic like/unlike with rollback. Flips the heart immediately,

@@ -7,6 +7,13 @@ import '../../../core/network/dio_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../filters/data/filters_repository.dart';
+import '../../filters/domain/feed_filter.dart';
+import '../../filters/presentation/cubit/feed_filter_cubit.dart';
+import '../../filters/presentation/cubit/filter_options_cubit.dart';
+import '../../filters/presentation/widgets/active_filters_bar.dart';
+import '../../filters/presentation/widgets/filters_button.dart';
+import '../../filters/presentation/widgets/filters_sheet.dart';
 import '../../stories/presentation/widgets/stories_rail.dart';
 import '../data/feed_repository.dart';
 import 'cubit/feed_cubit.dart';
@@ -19,9 +26,18 @@ class FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          FeedCubit(FeedRepository(DioClient()))..loadInitial(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              FeedCubit(FeedRepository(DioClient()))..loadInitial(),
+        ),
+        BlocProvider(create: (context) => FeedFilterCubit()),
+        BlocProvider(
+          create: (context) =>
+              FilterOptionsCubit(FiltersRepository(DioClient()))..load(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Row(
@@ -54,10 +70,36 @@ class FeedPage extends StatelessWidget {
           children: [
             StoriesRail(),
             StoriesRailDivider(),
+            _FiltersRow(),
             Expanded(child: _FeedBody()),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FiltersRow extends StatelessWidget {
+  const _FiltersRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final int activeCount = context.watch<FeedFilterCubit>().state.activeCount;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.screenHorizontal,
+            vertical: AppSpacing.s,
+          ),
+          child: FiltersButton(
+            activeCount: activeCount,
+            onTap: () => showFiltersSheet(context),
+          ),
+        ),
+        const ActiveFiltersBar(),
+      ],
     );
   }
 }
@@ -100,25 +142,37 @@ class _FeedBodyState extends State<_FeedBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FeedCubit, FeedState>(
-      listenWhen: (previous, current) => current.actionFailure != null,
-      listener: (context, state) {
-        final failure = state.actionFailure!;
-        final postId = state.actionFailurePostId;
-        final cubit = context.read<FeedCubit>();
-        cubit.clearActionFailure();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(failure.userMessage),
-            action: (failure.retryable && postId != null)
-                ? SnackBarAction(
-                    label: 'Retry',
-                    onPressed: () => cubit.toggleLike(postId),
-                  )
-                : null,
-          ),
-        );
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<FeedCubit, FeedState>(
+          listenWhen: (previous, current) => current.actionFailure != null,
+          listener: (context, state) {
+            final failure = state.actionFailure!;
+            final postId = state.actionFailurePostId;
+            final cubit = context.read<FeedCubit>();
+            cubit.clearActionFailure();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(failure.userMessage),
+                action: (failure.retryable && postId != null)
+                    ? SnackBarAction(
+                        label: 'Retry',
+                        onPressed: () => cubit.toggleLike(postId),
+                      )
+                    : null,
+              ),
+            );
+          },
+        ),
+        BlocListener<FeedFilterCubit, FeedFilter>(
+          listener: (context, filter) {
+            context.read<FeedCubit>().applyFilter(filter);
+            if (_scrollController.hasClients) {
+              _scrollController.jumpTo(0);
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<FeedCubit, FeedState>(
         builder: (context, state) {
           return switch (state.status) {
@@ -132,7 +186,12 @@ class _FeedBodyState extends State<_FeedBody> {
             FeedStatus.success => RefreshIndicator(
                 onRefresh: () => context.read<FeedCubit>().refresh(),
                 child: state.posts.isEmpty
-                    ? const _EmptyFeedView()
+                    ? (context.watch<FeedFilterCubit>().state.isActive
+                        ? _FilteredEmptyView(
+                            onClear: () =>
+                                context.read<FeedFilterCubit>().clear(),
+                          )
+                        : const _EmptyFeedView())
                     : ListView.builder(
                         controller: _scrollController,
                         itemCount: state.posts.length + 1,
@@ -191,6 +250,38 @@ class _EmptyFeedView extends StatelessWidget {
         SizedBox(height: AppSpacing.xxl),
         Center(
           child: Text('Nothing here yet', style: AppTypography.body),
+        ),
+      ],
+    );
+  }
+}
+
+class _FilteredEmptyView extends StatelessWidget {
+  const _FilteredEmptyView({required this.onClear});
+
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        const SizedBox(height: AppSpacing.xxl),
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'No posts match these filters',
+                style: AppTypography.body,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.l),
+              OutlinedButton(
+                onPressed: onClear,
+                child: const Text('Clear filters'),
+              ),
+            ],
+          ),
         ),
       ],
     );

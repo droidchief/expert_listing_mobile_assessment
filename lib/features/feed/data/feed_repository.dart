@@ -1,6 +1,6 @@
 import '../../../core/error/failure.dart';
 import '../../../core/network/dio_client.dart';
-import 'feed_filters.dart';
+import '../../filters/domain/feed_filter.dart';
 import 'models/feed_page.dart';
 import 'models/like_result.dart';
 
@@ -15,19 +15,18 @@ class FeedRepository {
   Future<FeedPage> getFeed({
     String? cursor,
     int limit = 20,
-    FeedFilters? filters,
+    FeedFilter? filter,
   }) async {
     final Map<String, dynamic> queryParameters = {
       'limit': limit,
       'cursor': ?cursor,
-      ...?filters?.toQueryParameters(),
+      ...?filter?.toQueryParams(),
     };
 
     final response = await _dioClient.get<Map<String, dynamic>>(
       '/posts',
       queryParameters: queryParameters,
     );
-
 
     try {
       return FeedPage.fromJson(response.data!);
