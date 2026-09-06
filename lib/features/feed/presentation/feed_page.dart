@@ -85,21 +85,62 @@ class _FiltersRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int activeCount = context.watch<FeedFilterCubit>().state.activeCount;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.screenHorizontal,
-            vertical: AppSpacing.s,
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenHorizontal,
+              vertical: AppSpacing.s,
+            ),
+            child: Row(
+              children: [
+                FiltersButton(
+                  activeCount: activeCount,
+                  onTap: () => showFiltersSheet(context),
+                ),
+                const SizedBox(width: AppSpacing.s),
+                const _TrendingSearchesButton(),
+              ],
+            ),
           ),
-          child: FiltersButton(
-            activeCount: activeCount,
-            onTap: () => showFiltersSheet(context),
+          const ActiveFiltersBar(),
+        ],
+      ),
+    );
+  }
+}
+
+/// Purely decorative — no tap handler, no functionality.
+class _TrendingSearchesButton extends StatelessWidget {
+  const _TrendingSearchesButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.m,
+        vertical: AppSpacing.s,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.trending_up,
+            size: AppSpacing.iconLocation,
+            color: AppColors.primary,
           ),
-        ),
-        const ActiveFiltersBar(),
-      ],
+          const SizedBox(width: AppSpacing.xs),
+          Text('Trending Searches', style: AppTypography.metaLine),
+        ],
+      ),
     );
   }
 }
