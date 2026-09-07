@@ -1,4 +1,3 @@
-/// Route path constants. M4 adds `/posts/:id/comments` and `/composer`.
 abstract final class AppRoutes {
   static const String feed = '/feed';
   static const String search = '/search';
@@ -8,4 +7,6 @@ abstract final class AppRoutes {
 
   static const String storyViewer = '/stories/:groupIndex';
   static String storyViewerPath(int groupIndex) => '/stories/$groupIndex';
+
+  static const String composer = '/composer';
 }

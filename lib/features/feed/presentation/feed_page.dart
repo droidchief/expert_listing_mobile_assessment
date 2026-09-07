@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../core/error/failure.dart';
 import '../../../core/network/dio_client.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_avatar.dart';
 import '../../filters/data/filters_repository.dart';
 import '../../filters/domain/feed_filter.dart';
 import '../../filters/presentation/cubit/feed_filter_cubit.dart';
@@ -15,7 +19,6 @@ import '../../filters/presentation/widgets/active_filters_bar.dart';
 import '../../filters/presentation/widgets/filters_button.dart';
 import '../../filters/presentation/widgets/filters_sheet.dart';
 import '../../stories/presentation/widgets/stories_rail.dart';
-import '../data/feed_repository.dart';
 import 'cubit/feed_cubit.dart';
 import 'cubit/feed_state.dart';
 import 'widgets/post_card.dart';
@@ -28,10 +31,6 @@ class FeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) =>
-              FeedCubit(FeedRepository(DioClient()))..loadInitial(),
-        ),
         BlocProvider(create: (context) => FeedFilterCubit()),
         BlocProvider(
           create: (context) =>
@@ -70,8 +69,63 @@ class FeedPage extends StatelessWidget {
           children: [
             StoriesRail(),
             StoriesRailDivider(),
+            _ComposerPromptRow(),
             _FiltersRow(),
             Expanded(child: _FeedBody()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Opens the composer. The feed's `FeedCubit` is provided above the router
+/// (in app.dart), so `/composer` — a full-screen route, also reachable
+/// from the bottom nav's "+" tab — can call `refresh()` on it after a
+/// successful post without this prompt needing to pass anything through.
+class _ComposerPromptRow extends StatelessWidget {
+  const _ComposerPromptRow();
+
+  static const String _currentUserAvatarUrl =
+      'https://i.pravatar.cc/150?u=miracle.h';
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontal,
+        vertical: AppSpacing.s,
+      ),
+      child: GestureDetector(
+        onTap: () => context.push(AppRoutes.composer),
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          children: [
+            const AppAvatar(
+              size: AppSpacing.avatarPost,
+              url: _currentUserAvatarUrl,
+              name: 'Miracle H',
+            ),
+            const SizedBox(width: AppSpacing.s),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.m,
+                  vertical: AppSpacing.m,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.fieldBackground,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                ),
+                child: Text(
+                  'Share a property, Make a request or say something…',
+                  style: AppTypography.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ],
         ),
       ),

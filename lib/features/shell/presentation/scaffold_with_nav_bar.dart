@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -61,10 +62,13 @@ class ScaffoldWithNavBar extends StatelessWidget {
                   child: _NavItem(
                     data: _items[index],
                     selected: navigationShell.currentIndex == index,
-                    onTap: () => navigationShell.goBranch(
-                      index,
-                      initialLocation: index == navigationShell.currentIndex,
-                    ),
+                    onTap: _items[index].isCenter
+                        ? () => context.push(AppRoutes.composer)
+                        : () => navigationShell.goBranch(
+                              index,
+                              initialLocation:
+                                  index == navigationShell.currentIndex,
+                            ),
                   ),
                 ),
             ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/composer/presentation/screens/composer_screen.dart';
 import '../../features/feed/presentation/feed_page.dart';
 import '../../features/shell/presentation/placeholder_tab_page.dart';
 import '../../features/shell/presentation/scaffold_with_nav_bar.dart';
@@ -93,6 +94,21 @@ final GoRouter appRouter = GoRouter(
           },
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.composer,
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const ComposerScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final Animation<Offset> slide = Tween(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+          return SlideTransition(position: slide, child: child);
+        },
+      ),
     ),
   ],
 );

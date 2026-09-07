@@ -43,4 +43,6 @@ abstract final class AppSpacing {
   static const double sendButtonSize = 36;
   static const double grabHandleWidth = 40;
   static const double grabHandleHeight = 4;
+
+  static const double mediaThumb = 72;
 }
