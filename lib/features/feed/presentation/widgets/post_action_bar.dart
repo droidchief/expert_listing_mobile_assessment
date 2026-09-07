@@ -62,11 +62,11 @@ class PostActionBar extends StatelessWidget {
               ),
             ),
           ),
-          const Spacer(),
           if (views.isNotEmpty) ...[
             Text('$views Views', style: AppTypography.countLabel),
             const SizedBox(width: AppSpacing.s),
           ],
+          const Spacer(),
           const _BookmarkButton(),
         ],
       ),

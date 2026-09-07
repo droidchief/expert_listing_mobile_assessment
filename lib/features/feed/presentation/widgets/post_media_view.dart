@@ -157,7 +157,11 @@ class _DoubleTapHeart extends StatelessWidget {
             child: Transform.scale(scale: scale, child: child),
           );
         },
-        child: const Icon(Icons.favorite, color: AppColors.likeActive, size: 80),
+        child: const Icon(
+          Icons.favorite,
+          color: AppColors.likeActive,
+          size: 80,
+        ),
       ),
     );
   }
@@ -273,16 +277,21 @@ class _PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(16),
       width: AppSpacing.mediaPlayButton,
       height: AppSpacing.mediaPlayButton,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.overlayScrim.withValues(alpha: 0.45),
       ),
-      child: const Icon(
-        Icons.play_arrow,
-        color: AppColors.overlayContent,
-        size: AppSpacing.mediaPlayIcon,
+      child: SvgPicture.asset(
+        'assets/images/play_icon.svg',
+        width: AppSpacing.mediaPlayIcon,
+        height: AppSpacing.mediaPlayIcon,
+        colorFilter: const ColorFilter.mode(
+          AppColors.overlayContent,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }
@@ -307,9 +316,24 @@ class _DurationBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: AppColors.overlayScrim.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(AppSpacing.xs),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
       ),
-      child: Text(label, style: AppTypography.durationBadge),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            'assets/images/play_icon.svg',
+            width: AppSpacing.iconLocation,
+            height: AppSpacing.iconLocation,
+            colorFilter: const ColorFilter.mode(
+              AppColors.overlayContent,
+              BlendMode.srcIn,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Text(label, style: AppTypography.durationBadge),
+        ],
+      ),
     );
   }
 }

@@ -511,10 +511,13 @@ class _FeedFooter extends StatelessWidget {
     }
 
     if (!state.hasMore && state.posts.isNotEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(AppSpacing.l),
-        child: Center(
-          child: Text("You're all caught up", style: AppTypography.metaLine),
+      return Container(
+        color: AppColors.divider,
+        child: const Padding(
+          padding: EdgeInsets.all(AppSpacing.xl),
+          child: Center(
+            child: Text("You're all caught up", style: AppTypography.metaLine),
+          ),
         ),
       );
     }
