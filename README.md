@@ -28,3 +28,20 @@ By default it points at the shared dev backend, with a mocked-user header standi
 - **Optimistic UI**: likes and the double-tap-to-like heart update the UI immediately and roll back on API failure.
 - **Media**: images are compressed (WebP, capped at 1600px) and stripped of EXIF before upload.
 - **Mock data**: stories are mocked client-side (the real `/stories` endpoint doesn't yet return per-story detail); everything else hits the live API.
+
+## Screens
+
+<img width="330" height="717" alt="Simulator Screenshot - iPhone 16 Pro Max - 2026-09-07 at 16 13 20" src="https://github.com/user-attachments/assets/7e22522c-c965-4056-aca8-c37184d94b15" />
+
+<img width="330" height="717" alt="Simulator Screenshot - iPhone 16 Pro Max - 2026-09-07 at 16 13 58" src="https://github.com/user-attachments/assets/55aba8df-977d-485e-956e-786ef65d0d87" />
+
+<img width="330" height="717" alt="Simulator Screenshot - iPhone 16 Pro Max - 2026-09-07 at 16 14 31" src="https://github.com/user-attachments/assets/8a29c6f2-8c5e-46cb-82ff-fb45c837fe82" />
+
+<img width="330" height="717" alt="Simulator Screenshot - iPhone 16 Pro Max - 2026-09-07 at 16 15 27" src="https://github.com/user-attachments/assets/bb581aa6-bb01-49ac-8184-d879b38f4a14" />
+
+<img width="330" height="717" alt="Simulator Screenshot - iPhone 16 Pro Max - 2026-09-07 at 16 15 40" src="https://github.com/user-attachments/assets/307c2831-b833-4122-aa0f-440f01ed53bd" />
+
+
+
+
+
