@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -15,30 +15,25 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   static const List<_NavItemData> _items = [
     _NavItemData(
+      label: 'Home',
+      assetPath: 'assets/images/home_tab_icon.svg',
+    ),
+    _NavItemData(
       label: 'Feed',
-      outlinedIcon: Icons.home_outlined,
-      filledIcon: Icons.home,
+      assetPath: 'assets/images/feed_tab_icon.svg',
+      badge: 'Beta',
     ),
     _NavItemData(
-      label: 'Search',
-      outlinedIcon: Icons.search,
-      filledIcon: Icons.search,
-    ),
-    _NavItemData(
-      label: 'List',
-      outlinedIcon: Icons.add,
-      filledIcon: Icons.add,
-      isCenter: true,
+      label: 'Wishlist',
+      assetPath: 'assets/images/wishlist_tab_icon.svg',
     ),
     _NavItemData(
       label: 'Notification',
-      outlinedIcon: Icons.notifications_none,
-      filledIcon: Icons.notifications,
+      assetPath: 'assets/images/notification_tab_icon.svg',
     ),
     _NavItemData(
       label: 'Profile',
-      outlinedIcon: Icons.person_outline,
-      filledIcon: Icons.person,
+      assetPath: 'assets/images/profile_tab_icon.svg',
     ),
   ];
 
@@ -62,13 +57,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
                   child: _NavItem(
                     data: _items[index],
                     selected: navigationShell.currentIndex == index,
-                    onTap: _items[index].isCenter
-                        ? () => context.push(AppRoutes.composer)
-                        : () => navigationShell.goBranch(
-                              index,
-                              initialLocation:
-                                  index == navigationShell.currentIndex,
-                            ),
+                    onTap: () => navigationShell.goBranch(
+                      index,
+                      initialLocation: index == navigationShell.currentIndex,
+                    ),
                   ),
                 ),
             ],
@@ -82,15 +74,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
 class _NavItemData {
   const _NavItemData({
     required this.label,
-    required this.outlinedIcon,
-    required this.filledIcon,
-    this.isCenter = false,
+    required this.assetPath,
+    this.badge,
   });
 
   final String label;
-  final IconData outlinedIcon;
-  final IconData filledIcon;
-  final bool isCenter;
+  final String assetPath;
+
+  final String? badge;
 }
 
 class _NavItem extends StatelessWidget {
@@ -106,7 +97,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = selected ? AppColors.primary : AppColors.textTertiary;
+    final Color color =
+        selected ? AppColors.primaryText : AppColors.navIconInactive;
 
     return InkWell(
       onTap: onTap,
@@ -114,34 +106,49 @@ class _NavItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (data.isCenter)
-            Container(
-              width: AppSpacing.iconNav + 10,
-              height: AppSpacing.iconNav + 10,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppSpacing.xs),
-                border: Border.all(color: AppColors.iconDefault, width: 1.5),
+          SvgPicture.asset(
+            data.assetPath,
+            width: AppSpacing.iconNav,
+            height: AppSpacing.iconNav,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                data.label,
+                style: AppTypography.navLabel.copyWith(color: color,
+                fontSize: 13, fontWeight: FontWeight.w500),
               ),
-              child: Icon(
-                data.outlinedIcon,
-                size: AppSpacing.iconNav,
-                color: AppColors.iconDefault,
-              ),
-            )
-          else
-            Icon(
-              selected ? data.filledIcon : data.outlinedIcon,
-              size: AppSpacing.iconNav,
-              color: color,
-            ),
-          if (!data.isCenter) ...[
-            const SizedBox(height: AppSpacing.xs / 2),
-            Text(
-              data.label,
-              style: AppTypography.navLabel.copyWith(color: color),
-            ),
-          ],
+              if (data.badge != null) ...[
+                const SizedBox(width: AppSpacing.xs),
+                _BetaBadge(label: data.badge!),
+              ],
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _BetaBadge extends StatelessWidget {
+  const _BetaBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      decoration: BoxDecoration(
+        color: AppColors.primaryText.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+      ),
+      child: Text(
+        label,
+        style: AppTypography.navLabel.copyWith(color: AppColors.primaryText),
       ),
     );
   }

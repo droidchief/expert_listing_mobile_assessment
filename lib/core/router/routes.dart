@@ -1,7 +1,7 @@
 abstract final class AppRoutes {
+  static const String home = '/home';
   static const String feed = '/feed';
-  static const String search = '/search';
-  static const String list = '/list';
+  static const String wishlist = '/wishlist';
   static const String notifications = '/notifications';
   static const String profile = '/profile';
 

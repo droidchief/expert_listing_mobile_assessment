@@ -60,7 +60,7 @@ class FeedPage extends StatelessWidget {
             _CircularActionButton(
               assetPath: 'assets/images/plus.svg',
               tooltip: 'Add',
-              onTap: () {},
+              onTap: () => context.push(AppRoutes.composer),
             ),
             const SizedBox(width: AppSpacing.s),
           ],

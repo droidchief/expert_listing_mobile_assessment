@@ -6,6 +6,15 @@ abstract final class AppColors {
   static const Color primary = Color(0xFF105B48);
   static const Color primaryContainer = Color(0xFFE6F4EC);
 
+  // Distinct from `primary` — used for the bottom nav's active tab
+  // (icon + label) and its "Beta" badge, per the nav bar redesign.
+  static const Color primaryText = Color(0xFF4F7A1F);
+
+  // The bottom nav's own icon set ships pre-colored to this grey — used
+  // for every inactive nav icon so all five look consistent regardless of
+  // what each individual SVG happens to bake in.
+  static const Color navIconInactive = Color(0xFF434343);
+
   static const Color storyRingUnseen = Color(0xFF3FA34D);
   static const Color storyRingSeen = Color(0xFFD9D9D9);
 

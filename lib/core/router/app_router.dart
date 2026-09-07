@@ -22,6 +22,17 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: AppRoutes.home,
+              builder: (context, state) => const PlaceholderTabPage(
+                title: 'Home',
+                icon: Icons.home_outlined,
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: AppRoutes.feed,
               builder: (context, state) => const FeedPage(),
             ),
@@ -30,21 +41,10 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.search,
+              path: AppRoutes.wishlist,
               builder: (context, state) => const PlaceholderTabPage(
-                title: 'Search',
-                icon: Icons.search,
-              ),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.list,
-              builder: (context, state) => const PlaceholderTabPage(
-                title: 'List',
-                icon: Icons.add_box_outlined,
+                title: 'Wishlist',
+                icon: Icons.favorite_border,
               ),
             ),
           ],
