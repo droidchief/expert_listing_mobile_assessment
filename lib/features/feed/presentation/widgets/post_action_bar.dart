@@ -34,7 +34,7 @@ class PostActionBar extends StatelessWidget {
         children: [
           _LikeButton(post: post),
           AppIconButton(
-            icon: Icons.mode_comment_outlined,
+            iconAsset: 'assets/images/comment_icon.svg',
             count: post.counts.comments,
             semanticLabel: 'Comments',
             onTap: () {
@@ -49,7 +49,7 @@ class PostActionBar extends StatelessWidget {
             },
           ),
           const AppIconButton(
-            icon: Icons.send_outlined,
+            iconAsset: 'assets/images/share_icon.svg',
             semanticLabel: 'Share',
           ),
           const Spacer(),
@@ -58,7 +58,7 @@ class PostActionBar extends StatelessWidget {
             const SizedBox(width: AppSpacing.s),
           ],
           AppIconButton(
-            icon: Icons.bookmark_border,
+            iconAsset: 'assets/images/bookmark_icon.svg',
             count: post.counts.bookmarks,
             semanticLabel: 'Bookmark',
           ),
@@ -90,7 +90,8 @@ class _LikeButtonState extends State<_LikeButton> {
   @override
   void didUpdateWidget(covariant _LikeButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.post.viewerState.hasLiked != widget.post.viewerState.hasLiked) {
+    if (oldWidget.post.viewerState.hasLiked !=
+        widget.post.viewerState.hasLiked) {
       setState(() => _scale = 1.25);
     }
   }
@@ -126,7 +127,9 @@ class _LikeButtonState extends State<_LikeButton> {
                   child: Icon(
                     hasLiked ? Icons.favorite : Icons.favorite_border,
                     size: AppSpacing.iconAction,
-                    color: hasLiked ? AppColors.likeActive : AppColors.iconDefault,
+                    color: hasLiked
+                        ? AppColors.likeActive
+                        : AppColors.iconDefault,
                   ),
                 ),
                 if (likes > 0) ...[
