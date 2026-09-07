@@ -42,7 +42,7 @@ class FeedFilter extends Equatable {
       hasMedia != null ||
       postedWithin != null;
 
-  /// Counts *groups* that are active, not individual selections 
+  /// Counts groups that are active, not individual selections 
   int get activeCount => [
         postTypes.isNotEmpty,
         transactionTypes.isNotEmpty,

@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// Typed failures the network layer converts every `DioException` into.
-/// Nothing above `core/network/` should ever see a raw `DioException`.
 sealed class Failure extends Equatable {
   const Failure();
 

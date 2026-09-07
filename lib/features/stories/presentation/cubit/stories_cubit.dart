@@ -12,13 +12,10 @@ import 'stories_state.dart';
 class StoriesCubit extends Cubit<StoriesState> {
   StoriesCubit() : super(const StoriesState());
 
-  // The seeded current user (see `FeedCubit._currentUsername`) — already
-  // represented by "Your Story" in the rail, so never eligible to become a
-  // guest group of its own.
+
   static const String _currentUsername = 'miracle.h';
 
-  /// Loads mock data and sorts the rail: unseen groups first, then seen,
-  /// newest activity first within each band. Ordering is only recomputed here
+
 
   void load() {
     emit(state.copyWith(status: StoriesStatus.loading));
@@ -35,11 +32,7 @@ class StoriesCubit extends Cubit<StoriesState> {
     }
   }
 
-  /// Demo-only bridge from the live feed to the (otherwise fully mocked)
-  /// stories rail: turns up to [maxGroups] distinct, still-unrepresented
-  /// authors from the given feed page into guest story groups, built from
-  /// their own post media, so "has a story" is a real fact shared by both
-  /// the rail and the feed's avatar rings rather than two separate lies.
+
   void addGuestGroupsFromPosts(List<Post> posts, {int maxGroups = 4}) {
     final Set<String> existingAuthorIds = state.groups
         .map((group) => group.author.id)

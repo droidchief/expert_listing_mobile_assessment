@@ -129,9 +129,7 @@ class _FiltersSheetState extends State<FiltersSheet> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // The modal route's own barrier sits behind this whole builder
-        // result, so it never sees taps in the space above the sheet card —
-        // handle "tap outside to dismiss" here instead.
+
         Positioned.fill(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
@@ -152,8 +150,6 @@ class _FiltersSheetState extends State<FiltersSheet> {
       snapSizes: const [0.75, 0.95],
       builder: (context, scrollController) {
         return GestureDetector(
-          // Absorb taps on the card itself so they don't fall through to
-          // the dismiss detector behind it.
           onTap: () {},
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(

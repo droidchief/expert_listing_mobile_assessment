@@ -70,8 +70,6 @@ class Post extends Equatable {
   final TopComment? topComment;
   final bool isEdited;
   final bool isPinned;
-  // UTC per the API contract. Convert with .toLocal() at render time only —
-  // never store local time here.
   final DateTime createdAt;
 
   Map<String, dynamic> toJson() => _$PostToJson(this);

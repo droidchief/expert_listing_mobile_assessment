@@ -27,7 +27,6 @@ class _PostCardSkeleton extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Opaque card background lives outside the Shimmer.
         ColoredBox(
           color: AppColors.surface,
           child: Padding(
@@ -59,7 +58,6 @@ class _PostCardSkeleton extends StatelessWidget {
             ),
           ),
         ),
-        // Divider is opaque too — keep it out of the shimmer.
         const _CardDivider(),
       ],
     );

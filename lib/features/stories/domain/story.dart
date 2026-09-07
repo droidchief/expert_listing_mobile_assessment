@@ -13,7 +13,6 @@ class Story extends Equatable {
 
   final String id;
   final String imageUrl;
-  // UTC.
   final DateTime createdAt;
   final Duration duration;
   final bool isSeen;

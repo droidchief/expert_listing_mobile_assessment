@@ -82,8 +82,7 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
     }
   }
 
-  /// Resets the timer for whatever `_currentGroupIndex`/`_currentStoryIndex`
-  /// now point to, marks it seen immediately (not on completion).
+
   void _enterStory() {
     _progressController
       ..stop()
@@ -118,8 +117,7 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
     _progressController.forward();
   }
 
-  // A broken URL shouldn't hang the story forever. Let it play out on
-  // schedule same as a loaded image.
+
   void _onImageError() => _onImageLoaded();
 
   void _goToNextStory() {
@@ -261,8 +259,7 @@ class _StoryPage extends StatelessWidget {
                   color: AppColors.overlayContent,
                 ),
               ),
-              
-            // Tap zones sit *below* the header in the stack 
+
             if (isActive)
               GestureDetector(
                 behavior: HitTestBehavior.translucent,
