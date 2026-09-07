@@ -68,7 +68,7 @@ class FeedPage extends StatelessWidget {
         body: const Column(
           children: [
             StoriesRail(),
-            StoriesRailDivider(),
+            SizedBox(height: AppSpacing.s),
             Expanded(child: _FeedBody()),
           ],
         ),
@@ -97,34 +97,35 @@ class _ComposerPromptRow extends StatelessWidget {
       child: GestureDetector(
         onTap: () => context.push(AppRoutes.composer),
         behavior: HitTestBehavior.opaque,
-        child: Row(
-          children: [
-            const AppAvatar(
-              size: AppSpacing.avatarPost,
-              url: _currentUserAvatarUrl,
-              name: 'Miracle H',
-            ),
-            const SizedBox(width: AppSpacing.s),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.m,
-                  vertical: AppSpacing.m,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.fieldBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: AppSpacing.m,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.overlayScrim.withValues(alpha: 0.02),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+          ),
+          child: Row(
+            children: [
+              const AppAvatar(
+                size: AppSpacing.avatarPost,
+                url: _currentUserAvatarUrl,
+                name: 'Miracle H',
+              ),
+              const SizedBox(width: AppSpacing.s),
+              Expanded(
                 child: Text(
-                  'Share a property, Make a request or say something…',
+                  'Share a property, request or say something…',
                   style: AppTypography.body.copyWith(
                     color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w400
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -166,7 +167,6 @@ class _FiltersRow extends StatelessWidget {
   }
 }
 
-/// Purely decorative — no tap handler, no functionality.
 class _TrendingSearchesButton extends StatelessWidget {
   const _TrendingSearchesButton();
 
@@ -184,22 +184,22 @@ class _TrendingSearchesButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.trending_up,
-            size: AppSpacing.iconLocation,
-            color: AppColors.primary,
-          ),
+          const Icon(Icons.trending_up, size: 16, color: AppColors.primaryText),
           const SizedBox(width: AppSpacing.xs),
-          Text('Trending Searches', style: AppTypography.metaLine),
+          Text(
+            'Trending Searches',
+            style: AppTypography.metaLine.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondaryDarker,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-/// Pins the Filters/Trending row to the top of the scroll view. Fixed
-/// estimated heights, not measured — `hasActiveFilters` picks between the
-/// two, matching whether `ActiveFiltersBar` is rendering anything.
 class _StickyFiltersHeaderDelegate extends SliverPersistentHeaderDelegate {
   const _StickyFiltersHeaderDelegate({required this.hasActiveFilters});
 
@@ -222,10 +222,7 @@ class _StickyFiltersHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return const DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
-      ),
+      decoration: BoxDecoration(color: AppColors.surface),
       child: _FiltersRow(),
     );
   }
@@ -306,8 +303,10 @@ class _FeedBodyState extends State<_FeedBody> {
       ],
       child: BlocBuilder<FeedCubit, FeedState>(
         builder: (context, state) {
-          final int activeFilterCount =
-              context.watch<FeedFilterCubit>().state.activeCount;
+          final int activeFilterCount = context
+              .watch<FeedFilterCubit>()
+              .state
+              .activeCount;
           return RefreshIndicator(
             onRefresh: () => context.read<FeedCubit>().refresh(),
             child: CustomScrollView(
@@ -321,46 +320,50 @@ class _FeedBodyState extends State<_FeedBody> {
                 ),
                 const SliverToBoxAdapter(child: _ComposerPromptRow()),
                 ...switch (state.status) {
-                  FeedStatus.initial ||
-                  FeedStatus.loading =>
-                    [
-                      const SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: FeedSkeletonList(),
-                      ),
-                    ],
+                  FeedStatus.initial || FeedStatus.loading => [
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: FeedSkeletonList(),
+                    ),
+                  ],
                   FeedStatus.failure => [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: _FeedFailureView(
-                          failure: state.failure!,
-                          onRetry: () => context.read<FeedCubit>().loadInitial(),
-                        ),
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _FeedFailureView(
+                        failure: state.failure!,
+                        onRetry: () => context.read<FeedCubit>().loadInitial(),
                       ),
-                    ],
-                  FeedStatus.success => state.posts.isEmpty
-                      ? [
-                          SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: context.watch<FeedFilterCubit>().state.isActive
-                                ? _FilteredEmptyView(
-                                    onClear: () =>
-                                        context.read<FeedFilterCubit>().clear(),
-                                  )
-                                : const _EmptyFeedView(),
-                          ),
-                        ]
-                      : [
-                          SliverList.builder(
-                            itemCount: state.posts.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index < state.posts.length) {
-                                return PostCard(post: state.posts[index]);
-                              }
-                              return _FeedFooter(state: state);
-                            },
-                          ),
-                        ],
+                    ),
+                  ],
+                  FeedStatus.success =>
+                    state.posts.isEmpty
+                        ? [
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child:
+                                  context
+                                      .watch<FeedFilterCubit>()
+                                      .state
+                                      .isActive
+                                  ? _FilteredEmptyView(
+                                      onClear: () => context
+                                          .read<FeedFilterCubit>()
+                                          .clear(),
+                                    )
+                                  : const _EmptyFeedView(),
+                            ),
+                          ]
+                        : [
+                            SliverList.builder(
+                              itemCount: state.posts.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index < state.posts.length) {
+                                  return PostCard(post: state.posts[index]);
+                                }
+                                return _FeedFooter(state: state);
+                              },
+                            ),
+                          ],
                 },
               ],
             ),
@@ -409,9 +412,7 @@ class _EmptyFeedView extends StatelessWidget {
     return ListView(
       children: const [
         SizedBox(height: AppSpacing.xxl),
-        Center(
-          child: Text('Nothing here yet', style: AppTypography.body),
-        ),
+        Center(child: Text('Nothing here yet', style: AppTypography.body)),
       ],
     );
   }
@@ -496,10 +497,7 @@ class _FeedFooter extends StatelessWidget {
       return const Padding(
         padding: EdgeInsets.all(AppSpacing.l),
         child: Center(
-          child: Text(
-            "You're all caught up",
-            style: AppTypography.metaLine,
-          ),
+          child: Text("You're all caught up", style: AppTypography.metaLine),
         ),
       );
     }

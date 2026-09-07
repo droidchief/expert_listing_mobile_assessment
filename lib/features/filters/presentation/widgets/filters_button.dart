@@ -36,7 +36,9 @@ class FiltersButton extends StatelessWidget {
               color: AppColors.iconDefault,
             ),
             const SizedBox(width: AppSpacing.xs),
-            Text('Filters', style: AppTypography.metaLine),
+            Text('Filters', style: AppTypography.metaLine.copyWith(
+              fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textSecondaryDarker
+            )),
             if (activeCount > 0) ...[
               const SizedBox(width: AppSpacing.xs),
               _Badge(count: activeCount),

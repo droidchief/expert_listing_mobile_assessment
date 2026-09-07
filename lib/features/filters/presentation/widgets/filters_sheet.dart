@@ -69,11 +69,12 @@ class _FiltersSheetState extends State<FiltersSheet> {
       final Set<String> validTransactionValues = postTypes.isEmpty
           ? options.transactionTypes.map((t) => t.value).toSet()
           : options.transactionTypes
-              .where((t) => postTypes.contains(t.postType))
-              .map((t) => t.value)
-              .toSet();
-      final Set<String> transactionTypes =
-          _draft.transactionTypes.where(validTransactionValues.contains).toSet();
+                .where((t) => postTypes.contains(t.postType))
+                .map((t) => t.value)
+                .toSet();
+      final Set<String> transactionTypes = _draft.transactionTypes
+          .where(validTransactionValues.contains)
+          .toSet();
 
       _draft = _draft.copyWith(
         postTypes: postTypes,
@@ -131,6 +132,23 @@ class _FiltersSheetState extends State<FiltersSheet> {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // The modal route's own barrier sits behind this whole builder
+        // result, so it never sees taps in the space above the sheet card —
+        // handle "tap outside to dismiss" here instead.
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => Navigator.of(context).maybePop(),
+          ),
+        ),
+        _buildSheet(context),
+      ],
+    );
+  }
+
+  Widget _buildSheet(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
       minChildSize: 0.5,
@@ -138,115 +156,132 @@ class _FiltersSheetState extends State<FiltersSheet> {
       snap: true,
       snapSizes: const [0.75, 0.95],
       builder: (context, scrollController) {
-        return ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(AppSpacing.radiusSheet),
-          ),
-          child: Container(
-            color: AppColors.surface,
-            child: SafeArea(
-              top: false,
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.m),
-                  Container(
-                    width: AppSpacing.grabHandleWidth,
-                    height: AppSpacing.grabHandleHeight,
-                    decoration: BoxDecoration(
-                      color: AppColors.divider,
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.grabHandleHeight),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.m),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.screenHorizontal,
-                    ),
-                    child: Row(
-                      children: [
-                        Text('Filters', style: AppTypography.displayName),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: _clearAll,
-                          child: Text('Clear all', style: AppTypography.linkLabel),
+        return GestureDetector(
+          // Absorb taps on the card itself so they don't fall through to
+          // the dismiss detector behind it.
+          onTap: () {},
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusSheet),
+            ),
+            child: Container(
+              color: AppColors.surface,
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSpacing.m),
+                    Container(
+                      width: AppSpacing.grabHandleWidth,
+                      height: AppSpacing.grabHandleHeight,
+                      decoration: BoxDecoration(
+                        color: AppColors.divider,
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.grabHandleHeight,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.m),
-                  const _Divider(),
-                  Expanded(
-                    child: BlocBuilder<FilterOptionsCubit, FilterOptionsState>(
-                      builder: (context, state) => switch (state.status) {
-                        FilterOptionsStatus.success => _SheetBody(
-                            options: state.options!,
-                            draft: _draft,
-                            scrollController: scrollController,
-                            onPostTypeTap: (v) =>
-                                _togglePostType(v, state.options!),
-                            onTransactionTypeTap: _toggleTransactionType,
-                            onLocationTap: _toggleLocation,
-                            onBedroomsTap: _toggleBedrooms,
-                            onPostedWithinTap: _togglePostedWithin,
-                            onPhotosOnlyChanged: _togglePhotosOnly,
-                            onPriceChanged: (values) {
-                              setState(() {
-                                final priceRange = state.options!.priceRange;
-                                _draft = _draft.copyWith(
-                                  minPrice: values.start > priceRange.min
-                                      ? values.start
-                                      : null,
-                                  clearMinPrice: values.start <= priceRange.min,
-                                  maxPrice: values.end < priceRange.max
-                                      ? values.end
-                                      : null,
-                                  clearMaxPrice: values.end >= priceRange.max,
-                                );
-                              });
-                            },
-                            visibleTransactionOptions:
-                                _visibleTransactionOptions(state.options!),
+                    const SizedBox(height: AppSpacing.m),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.screenHorizontal,
+                      ),
+                      child: Row(
+                        children: [
+                          Text('Filters', style: AppTypography.displayName),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: _clearAll,
+                            child: Text(
+                              'Clear all',
+                              style: AppTypography.linkLabel,
+                            ),
                           ),
-                        FilterOptionsStatus.failure => Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(AppSpacing.xl),
-                              child: Text(
-                                state.failure?.userMessage ??
-                                    'Something went wrong loading filters.',
-                                style: AppTypography.body,
-                                textAlign: TextAlign.center,
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    const _Divider(),
+                    Expanded(
+                      child:
+                          BlocBuilder<FilterOptionsCubit, FilterOptionsState>(
+                            builder: (context, state) => switch (state.status) {
+                              FilterOptionsStatus.success => _SheetBody(
+                                options: state.options!,
+                                draft: _draft,
+                                scrollController: scrollController,
+                                onPostTypeTap: (v) =>
+                                    _togglePostType(v, state.options!),
+                                onTransactionTypeTap: _toggleTransactionType,
+                                onLocationTap: _toggleLocation,
+                                onBedroomsTap: _toggleBedrooms,
+                                onPostedWithinTap: _togglePostedWithin,
+                                onPhotosOnlyChanged: _togglePhotosOnly,
+                                onPriceChanged: (values) {
+                                  setState(() {
+                                    final priceRange =
+                                        state.options!.priceRange;
+                                    _draft = _draft.copyWith(
+                                      minPrice: values.start > priceRange.min
+                                          ? values.start
+                                          : null,
+                                      clearMinPrice:
+                                          values.start <= priceRange.min,
+                                      maxPrice: values.end < priceRange.max
+                                          ? values.end
+                                          : null,
+                                      clearMaxPrice:
+                                          values.end >= priceRange.max,
+                                    );
+                                  });
+                                },
+                                visibleTransactionOptions:
+                                    _visibleTransactionOptions(state.options!),
+                              ),
+                              FilterOptionsStatus.failure => Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppSpacing.xl),
+                                  child: Text(
+                                    state.failure?.userMessage ??
+                                        'Something went wrong loading filters.',
+                                    style: AppTypography.body,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              FilterOptionsStatus.initial ||
+                              FilterOptionsStatus.loading => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            },
+                          ),
+                    ),
+                    const _Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(
+                        AppSpacing.screenHorizontal,
+                      ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: _apply,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.m,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusPill,
                               ),
                             ),
                           ),
-                        FilterOptionsStatus.initial ||
-                        FilterOptionsStatus.loading =>
-                          const Center(child: CircularProgressIndicator()),
-                      },
-                    ),
-                  ),
-                  const _Divider(),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: _apply,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.m,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppSpacing.radiusPill),
-                          ),
+                          child: const Text('Show results'),
                         ),
-                        child: const Text('Show results'),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -381,8 +416,10 @@ class _SheetBody extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text('Only show posts with photos or video',
-                    style: AppTypography.metaLine),
+                child: Text(
+                  'Only show posts with photos or video',
+                  style: AppTypography.metaLine,
+                ),
               ),
               Switch(
                 value: draft.hasMedia == true,

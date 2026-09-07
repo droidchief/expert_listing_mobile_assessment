@@ -71,16 +71,4 @@ class _StoriesRailState extends State<StoriesRail> {
   }
 }
 
-/// Hairline separating the rail from the post list, matching the design's
-/// flat, flush sections.
-class StoriesRailDivider extends StatelessWidget {
-  const StoriesRailDivider({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: AppColors.divider,
-      child: SizedBox(height: AppSpacing.cardSeparator, width: double.infinity),
-    );
-  }
-}
