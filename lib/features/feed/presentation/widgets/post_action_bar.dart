@@ -26,7 +26,8 @@ class PostActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String views = formatViewCount(post.counts.views);
+    final int viewCount = post.counts.views;
+    final String views = formatCount(viewCount);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -62,8 +63,11 @@ class PostActionBar extends StatelessWidget {
               ),
             ),
           ),
-          if (views.isNotEmpty) ...[
-            Text('$views Views', style: AppTypography.countLabel),
+          if (viewCount > 0) ...[
+            Text(
+              '$views ${viewCount == 1 ? 'View' : 'Views'}',
+              style: AppTypography.countLabel,
+            ),
             const SizedBox(width: AppSpacing.s),
           ],
           const Spacer(),

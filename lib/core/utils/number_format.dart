@@ -11,13 +11,6 @@ String formatCount(int value) {
   return '${_trimmed(millions)}M';
 }
 
-/// Same abbreviation as [formatCount], but view counts additionally hide
-/// below 100 per the design.
-String formatViewCount(int value) {
-  if (value < 100) return '';
-  return formatCount(value);
-}
-
 String _trimmed(double value) {
   final String rounded = value.toStringAsFixed(1);
   return rounded.endsWith('.0')

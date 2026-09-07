@@ -34,17 +34,4 @@ void main() {
       expect(formatCount(1000000), '1M');
     });
   });
-
-  group('formatViewCount', () {
-    test('hides counts under 100', () {
-      expect(formatViewCount(0), '');
-      expect(formatViewCount(99), '');
-    });
-
-    test('shows counts at and above 100', () {
-      expect(formatViewCount(100), '100');
-      expect(formatViewCount(700), '700');
-      expect(formatViewCount(1043), '1K');
-    });
-  });
 }
