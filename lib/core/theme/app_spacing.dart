@@ -1,4 +1,3 @@
-/// Spacing, radii, and sizing tokens. No widget should hardcode these values.
 abstract final class AppSpacing {
   static const double xs = 4;
   static const double s = 8;

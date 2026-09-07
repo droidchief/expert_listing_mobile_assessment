@@ -4,8 +4,6 @@ import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
-/// Icon, title, optional message, and optional action button. Used by
-/// placeholder tabs now, and by real empty states later.
 class EmptyView extends StatelessWidget {
   const EmptyView({
     super.key,

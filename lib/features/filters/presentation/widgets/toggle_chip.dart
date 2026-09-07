@@ -4,8 +4,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_chip.dart';
 import '../../../../core/theme/chip_styles.dart';
 
-/// A selectable filter chip — reuses `AppChip` (M1) with an on/off style
-/// pair instead of the transaction-type palette.
 class ToggleChip extends StatelessWidget {
   const ToggleChip({
     super.key,

@@ -6,8 +6,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 
-/// Bottom nav shell wrapping the `StatefulShellRoute`'s branch navigator,
-/// so each tab keeps its own scroll position and navigation stack.
 class ScaffoldWithNavBar extends StatelessWidget {
   const ScaffoldWithNavBar({super.key, required this.navigationShell});
 
@@ -47,8 +45,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
             color: AppColors.surface,
             border: Border(top: BorderSide(color: AppColors.divider)),
           ),
-          // No fixed height — the nav bar must grow with the label text at
-          // larger accessibility text scales rather than overflow.
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
           child: Row(
             children: [

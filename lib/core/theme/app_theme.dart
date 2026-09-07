@@ -23,8 +23,6 @@ abstract final class AppTheme {
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         scrolledUnderElevation: 0,
-        // M3 tints the app bar grey as content scrolls under it by
-        // default; the design has a flat white header.
         surfaceTintColor: Colors.transparent,
         titleTextStyle: AppTypography.appTitle,
         iconTheme: const IconThemeData(color: AppColors.iconDefault),

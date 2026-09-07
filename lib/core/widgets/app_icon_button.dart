@@ -5,12 +5,6 @@ import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import 'count_text.dart';
 
-/// Icon plus an optional count, used in the post action bar. Achieves a
-/// minimum 44x44 tap target via padding rather than inflating the icon.
-///
-/// Pass either [icon] (a `Material` glyph) or [iconAsset] (a path to an SVG
-/// under `assets/images/`) — exactly one is required. The SVG is tinted to
-/// match [color] the same way the `Icon` would be.
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
     super.key,

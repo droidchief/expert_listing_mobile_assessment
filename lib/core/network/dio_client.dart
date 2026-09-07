@@ -6,9 +6,7 @@ import 'api_config.dart';
 import 'auth_interceptor.dart';
 import 'error_interceptor.dart';
 
-/// The app's single configured Dio instance, plus request methods that
-/// unwrap Dio's error wrapping so nothing above this file ever sees a
-/// `DioException` — only [Failure].
+
 class DioClient {
   DioClient()
       : _dio = Dio(
@@ -22,8 +20,7 @@ class DioClient {
       AuthInterceptor(),
       if (kDebugMode)
         LogInterceptor(requestBody: false, responseBody: false),
-      // Must run last so it sees the raw DioException from the request
-      // itself, not one already logged/handled by an earlier interceptor.
+
       ErrorInterceptor(),
     ]);
   }
@@ -59,8 +56,7 @@ class DioClient {
   Failure _unwrap(DioException e) {
     final Object? error = e.error;
     if (error is Failure) return error;
-    // ErrorInterceptor always converts — this is an unreachable-in-
-    // practice safety net, not a silent fallback.
+    
     return const UnknownFailure();
   }
 }

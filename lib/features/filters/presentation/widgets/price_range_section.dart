@@ -5,10 +5,6 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/number_format.dart';
 import '../../domain/price_range_option.dart';
 
-/// Reuses M1's `formatCount` abbreviation (₦5M, ₦850K) prefixed with the
-/// naira sign — unlike a social count, a price of exactly zero is still a
-/// meaningful value to show, so zero isn't hidden here the way
-/// `formatCount` normally hides it.
 String formatNaira(double value) {
   if (value <= 0) return '₦0';
   return '₦${formatCount(value.round())}';

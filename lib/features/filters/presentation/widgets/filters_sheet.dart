@@ -15,11 +15,6 @@ import 'filter_section_heading.dart';
 import 'price_range_section.dart';
 import 'toggle_chip.dart';
 
-/// Opens the filter sheet. `FeedFilterCubit` and `FilterOptionsCubit` are
-/// re-provided by `.value` into the sheet's route — a modal bottom sheet
-/// is a sibling route on the navigator, not a descendant of the page that
-/// opened it, so it can't reach cubits provided above the feed screen on
-/// its own.
 Future<void> showFiltersSheet(BuildContext context) {
   final feedFilterCubit = context.read<FeedFilterCubit>();
   final filterOptionsCubit = context.read<FilterOptionsCubit>();

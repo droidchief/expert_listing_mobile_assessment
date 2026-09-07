@@ -2,10 +2,7 @@ import '../domain/story.dart';
 import '../domain/story_author.dart';
 import '../domain/story_group.dart';
 
-// Mock data only — no networking. GET /stories on the real backend returns
-// rail data only (author, story count, has_unseen, one preview URL); it does
-// not return the individual stories a viewer needs. 
-
+// Mock data only — no networking. 
 DateTime _ago(Duration duration) => DateTime.now().toUtc().subtract(duration);
 
 StoryAuthor _author(

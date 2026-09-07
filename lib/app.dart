@@ -14,11 +14,6 @@ class ExpertListingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      // Provided above the router so state survives navigation — the
-      // feed's rail and the story viewer route both need `StoriesCubit`,
-      // and the composer (a full-screen route, and reachable from the
-      // bottom nav's "+" tab, not just from inside the feed screen) needs
-      // to be able to call `FeedCubit.refresh()` after a successful post.
       providers: [
         BlocProvider(create: (context) => StoriesCubit()..load()),
         BlocProvider(

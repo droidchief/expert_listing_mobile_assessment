@@ -6,8 +6,6 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_avatar.dart';
 import '../../domain/story_group.dart';
 
-/// One rail entry per author. Green ring when the group has unseen
-/// stories, grey otherwise. Business authors get a small badge overlay.
 class StoryAvatar extends StatelessWidget {
   const StoryAvatar({super.key, required this.group, required this.onTap});
 

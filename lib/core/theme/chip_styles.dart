@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Style for a single transaction chip: a foreground colour used for the
-/// text/icon/border, a subtle tinted background, and a small leading icon.
 class ChipStyle {
   const ChipStyle({
     required this.foreground,
@@ -14,8 +12,6 @@ class ChipStyle {
   final IconData icon;
 }
 
-/// Keyed by the API's `transaction_type` enum string so M2 can look styles
-/// up directly from the response value with no translation layer.
 const Map<String, ChipStyle> kChipStyles = {
   'for_sale': ChipStyle(
     foreground: Color(0xFF2563EB),

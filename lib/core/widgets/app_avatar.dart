@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
-/// Circular avatar image. Falls back to initials when [url] is null, and
-/// can render a coloured ring (for stories) and a small badge overlay (for
-/// business accounts).
 class AppAvatar extends StatelessWidget {
   const AppAvatar({
     super.key,

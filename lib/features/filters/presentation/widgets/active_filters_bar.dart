@@ -16,9 +16,6 @@ import '../cubit/feed_filter_cubit.dart';
 import '../cubit/filter_options_cubit.dart';
 import 'price_range_section.dart' show formatNaira;
 
-/// Horizontally scrolling row of removable chips, one per active filter
-/// *group*, plus a trailing "Clear all". Visible only while a filter is
-/// applied.
 class ActiveFiltersBar extends StatelessWidget {
   const ActiveFiltersBar({super.key});
 

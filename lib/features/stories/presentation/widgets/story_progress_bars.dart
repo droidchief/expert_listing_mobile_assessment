@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// One segment per story in the current group: completed segments full,
-/// the current segment animating left-to-right with [progress], and
-/// upcoming segments empty.
 class StoryProgressBars extends StatelessWidget {
   const StoryProgressBars({
     super.key,
@@ -35,8 +32,6 @@ class StoryProgressBars extends StatelessWidget {
                       : i == currentIndex
                           ? progress
                           : 0,
-                  // Subtle dark track under a semi-transparent white fill,
-                  // so the bars read over any image brightness.
                   backgroundColor: AppColors.overlayScrim.withValues(
                     alpha: 0.3,
                   ),

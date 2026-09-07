@@ -9,8 +9,7 @@ import '../cubit/stories_state.dart';
 import 'story_avatar.dart';
 import 'your_story_avatar.dart';
 
-/// Horizontal rail under the app bar: "Your Story" first, then one avatar
-/// per author group. Sits above the M2 post list in the Feed tab.
+
 class StoriesRail extends StatefulWidget {
   const StoriesRail({super.key});
 

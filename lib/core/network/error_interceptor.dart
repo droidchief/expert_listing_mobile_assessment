@@ -2,12 +2,6 @@ import 'package:dio/dio.dart';
 
 import '../error/failure.dart';
 
-/// Converts every `DioException` into a typed [Failure] and throws it in
-/// place of calling `handler.reject`. Dio re-wraps whatever an interceptor
-/// throws as `DioException(error: <thrown value>)`, so [DioClient]'s
-/// request methods unwrap `.error` to surface the [Failure] — by the time
-/// code above `core/network/` sees anything, it is a [Failure], never a
-/// `DioException`.
 class ErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {

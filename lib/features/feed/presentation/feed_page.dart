@@ -90,9 +90,7 @@ class _ComposerPromptRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.s,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
       child: GestureDetector(
         onTap: () => context.push(AppRoutes.composer),
         behavior: HitTestBehavior.opaque,
@@ -120,7 +118,7 @@ class _ComposerPromptRow extends StatelessWidget {
                       'Share a property, request or say something…',
                       style: AppTypography.body.copyWith(
                         color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w400
+                        fontWeight: FontWeight.w400,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -128,13 +126,13 @@ class _ComposerPromptRow extends StatelessWidget {
                 ],
               ),
             ),
-                  const SizedBox(height: AppSpacing.m),
+            const SizedBox(height: AppSpacing.m),
 
-             Container(
+            Container(
               height: 2,
               width: double.infinity,
               color: AppColors.divider,
-             )
+            ),
           ],
         ),
       ),
@@ -351,7 +349,7 @@ class _FeedBodyState extends State<_FeedBody> {
                       ),
                     ),
                   ],
-                  
+
                   FeedStatus.success =>
                     state.posts.isEmpty
                         ? [
@@ -426,11 +424,8 @@ class _EmptyFeedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        SizedBox(height: AppSpacing.xxl),
-        Center(child: Text('Nothing here yet', style: AppTypography.body)),
-      ],
+    return const Center(
+      child: Text('Nothing here yet', style: AppTypography.body),
     );
   }
 }
@@ -442,27 +437,22 @@ class _FilteredEmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(height: AppSpacing.xxl),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'No posts match these filters',
-                style: AppTypography.body,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.l),
-              OutlinedButton(
-                onPressed: onClear,
-                child: const Text('Clear filters'),
-              ),
-            ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'No posts match these filters',
+            style: AppTypography.body,
+            textAlign: TextAlign.center,
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.l),
+          OutlinedButton(
+            onPressed: onClear,
+            child: const Text('Clear filters'),
+          ),
+        ],
+      ),
     );
   }
 }

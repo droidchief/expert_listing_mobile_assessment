@@ -2,7 +2,6 @@ import '../../../core/error/failure.dart';
 import '../../../core/network/dio_client.dart';
 import '../domain/filter_options.dart';
 
-/// Talks to `GET /filters/options`. Failures propagate as-is.
 class FiltersRepository {
   const FiltersRepository(this._dioClient);
 

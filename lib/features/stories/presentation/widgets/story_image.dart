@@ -1,10 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-/// Resolves [url] and reports load completion exactly once via
-/// [onLoaded]/[onError], independent of the widget's own rebuild cycle
-/// (which ticks every frame alongside the progress bar animation). The
-/// story viewer uses this to know when it's safe to start the timer.
 class StoryImage extends StatefulWidget {
   const StoryImage({
     super.key,

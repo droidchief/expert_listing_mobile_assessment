@@ -4,9 +4,6 @@ import '../../../../core/error/failure.dart';
 import '../../data/filters_repository.dart';
 import 'filter_options_state.dart';
 
-/// Fetches `/filters/options` once per session and caches it. Loaded when
-/// the feed screen mounts (not when the sheet opens), so the sheet itself
-/// never shows a spinner in the normal case.
 class FilterOptionsCubit extends Cubit<FilterOptionsState> {
   FilterOptionsCubit(this._repository) : super(const FilterOptionsState());
 

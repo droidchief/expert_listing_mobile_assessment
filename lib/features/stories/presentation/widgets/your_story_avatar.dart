@@ -5,8 +5,6 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_avatar.dart';
 
-/// Always first in the rail. No coloured ring, a green "+" badge at the
-/// bottom-right. Tapping does nothing — story creation is out of scope.
 class YourStoryAvatar extends StatelessWidget {
   const YourStoryAvatar({super.key, required this.avatarUrl});
 
@@ -22,9 +20,6 @@ class YourStoryAvatar extends StatelessWidget {
             size: AppSpacing.avatarStory,
             url: avatarUrl,
             name: 'Your Story',
-            // No visible ring, but matches the ring's outer size so the
-            // avatar (and the label below it) aligns with the other,
-            // ringed, entries in the rail.
             ringColor: Colors.transparent,
             badge: const _PlusBadge(),
           ),

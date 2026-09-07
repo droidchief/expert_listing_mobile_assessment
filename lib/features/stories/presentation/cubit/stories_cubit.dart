@@ -4,16 +4,13 @@ import '../../data/mock_stories.dart';
 import '../../domain/story_group.dart';
 import 'stories_state.dart';
 
-/// Owns story groups and seen state for the whole app, so the rail reflects
-/// what was watched in the viewer after it closes. Provided above both the
-/// feed and viewer routes for that reason.
+
 class StoriesCubit extends Cubit<StoriesState> {
   StoriesCubit() : super(const StoriesState());
 
   /// Loads mock data and sorts the rail: unseen groups first, then seen,
-  /// newest activity first within each band. Ordering is only recomputed
-  /// here — never in [markSeen] — so the rail doesn't reshuffle under the
-  /// viewer while someone is mid-session.
+  /// newest activity first within each band. Ordering is only recomputed here
+  
   void load() {
     emit(state.copyWith(status: StoriesStatus.loading));
     try {

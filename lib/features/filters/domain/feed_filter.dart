@@ -1,8 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// The applied filter selection. Stores the API's raw strings directly
-/// (`for_rent`, not an enum) since they go straight into query params with
-/// no translation.
 class FeedFilter extends Equatable {
   const FeedFilter({
     this.postTypes = const {},
@@ -17,8 +14,7 @@ class FeedFilter extends Equatable {
 
   static const FeedFilter empty = FeedFilter();
 
-  // Group identifiers, shared between the active-filters bar (which
-  // removes a group) and `withoutGroup`.
+  // Group identifiers, shared between the active-filters bar
   static const String groupPostType = 'postType';
   static const String groupTransactionType = 'transactionType';
   static const String groupLocation = 'location';
@@ -46,8 +42,7 @@ class FeedFilter extends Equatable {
       hasMedia != null ||
       postedWithin != null;
 
-  /// Counts *groups* that are active, not individual selections — three
-  /// selected locations is one active filter, not three.
+  /// Counts *groups* that are active, not individual selections 
   int get activeCount => [
         postTypes.isNotEmpty,
         transactionTypes.isNotEmpty,

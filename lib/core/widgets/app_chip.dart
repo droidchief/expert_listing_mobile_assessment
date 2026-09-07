@@ -4,7 +4,6 @@ import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 import '../theme/chip_styles.dart';
 
-/// Pill used for transaction chips (e.g. "For Sale", "Looking to Rent").
 class AppChip extends StatelessWidget {
   const AppChip({
     super.key,

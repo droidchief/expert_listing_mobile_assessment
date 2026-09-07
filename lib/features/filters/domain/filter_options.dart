@@ -9,9 +9,6 @@ import 'transaction_option.dart';
 
 part 'filter_options.g.dart';
 
-/// The whole `GET /filters/options` payload. Everything the sheet renders
-/// comes from here — nothing is hardcoded, so adding a location or a
-/// transaction type server-side needs no app release.
 @JsonSerializable(explicitToJson: true)
 class FilterOptions extends Equatable {
   const FilterOptions({

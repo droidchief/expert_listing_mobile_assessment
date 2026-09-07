@@ -4,10 +4,6 @@ import 'app_colors.dart';
 
 const String _fontFamily = 'OpenRunde';
 
-/// Named text styles matching the Figma design. Exposed as static getters
-/// rather than a `TextTheme` — the design doesn't map cleanly onto
-/// Material's slot names, and forcing it would make call sites harder to
-/// read.
 abstract final class AppTypography {
   static const TextStyle appTitle = TextStyle(
     fontFamily: _fontFamily,
@@ -45,7 +41,6 @@ abstract final class AppTypography {
     height: 1.4,
   );
 
-  // Colour is per-chip — apply the chip's foreground with copyWith.
   static const TextStyle chipLabel = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
@@ -73,7 +68,6 @@ abstract final class AppTypography {
     color: AppColors.textSecondary,
   );
 
-  // Colour is applied by the nav bar theme depending on selection state.
   static const TextStyle navLabel = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 10,
@@ -94,7 +88,6 @@ abstract final class AppTypography {
     color: AppColors.textSecondary,
   );
 
-  // In the story viewer header — fixed white, sits on a photo, not a surface.
   static const TextStyle storyUsername = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
@@ -109,7 +102,6 @@ abstract final class AppTypography {
     color: AppColors.overlayContent,
   );
 
-  // On the media overlay duration badge — fixed white, not theme-driven.
   static const TextStyle durationBadge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
