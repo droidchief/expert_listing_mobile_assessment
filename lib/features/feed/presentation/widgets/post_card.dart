@@ -7,7 +7,6 @@ import 'liked_by_row.dart';
 import 'post_action_bar.dart';
 import 'post_body.dart';
 import 'post_header.dart';
-import 'post_location_row.dart';
 import 'post_media_view.dart';
 import 'top_comment_preview.dart';
 
@@ -24,7 +23,6 @@ class PostCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-    
         Container(
           color: AppColors.surface,
           padding: const EdgeInsets.only(
@@ -35,11 +33,16 @@ class PostCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PostHeader(post: post),
+              SizedBox(height: AppSpacing.s,),
               PostBody(body: post.body),
-              PostLocationRow(post: post),
-              PostMediaView(media: post.media),
-              PostActionBar(post: post),
+              PostMediaView(
+                media: post.media,
+                postType: post.postType,
+                transactionType: post.transactionType,
+                transactionLabel: post.transactionLabel,
+              ),
               LikedByRow(likedByPreview: post.likedByPreview),
+              PostActionBar(post: post),
               TopCommentPreview(post: post),
             ],
           ),

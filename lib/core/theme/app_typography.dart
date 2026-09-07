@@ -63,7 +63,7 @@ abstract final class AppTypography {
     fontFamily: _fontFamily,
     fontSize: 13,
     fontWeight: FontWeight.w400,
-    color: AppColors.textSecondary,
+    color: AppColors.navIconInactive,
   );
 
   static const TextStyle storyLabel = TextStyle(

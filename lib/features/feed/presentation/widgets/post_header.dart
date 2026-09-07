@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_avatar.dart';
 import '../../../../core/widgets/app_icon_button.dart';
 import '../../data/models/post.dart';
 import '../../domain/enums.dart';
+import 'post_location_row.dart';
 
 class PostHeader extends StatelessWidget {
   const PostHeader({super.key, required this.post});
@@ -69,6 +70,7 @@ class PostHeader extends StatelessWidget {
                   '${relativeTime(post.createdAt.toLocal())}',
                   style: AppTypography.metaLine,
                 ),
+                PostLocationRow(post: post),
               ],
             ),
           ),

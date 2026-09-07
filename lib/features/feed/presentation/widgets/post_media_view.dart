@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/chip_styles.dart';
 import '../../data/models/post_media.dart';
 import '../../domain/enums.dart';
 
@@ -11,11 +12,21 @@ import '../../domain/enums.dart';
 ///
 /// Reserves its height via `AspectRatio` from the first item's aspect ratio
 /// (default `16/10`) before any image loads — this is what stops the feed
-/// juddering as it scrolls.
+/// juddering as it scrolls. Full-bleed: unlike the rest of the card, this is
+/// the only element without the screen's horizontal margin.
 class PostMediaView extends StatefulWidget {
-  const PostMediaView({super.key, required this.media});
+  const PostMediaView({
+    super.key,
+    required this.media,
+    required this.postType,
+    this.transactionType,
+    this.transactionLabel,
+  });
 
   final List<PostMedia> media;
+  final PostType postType;
+  final TransactionType? transactionType;
+  final String? transactionLabel;
 
   static const double _defaultAspectRatio = 16 / 10;
 
@@ -30,40 +41,114 @@ class _PostMediaViewState extends State<PostMediaView> {
   Widget build(BuildContext context) {
     if (widget.media.isEmpty) return const SizedBox.shrink();
 
-    final double aspectRatio = widget.media.first.aspectRatio ??
-        PostMediaView._defaultAspectRatio;
+    final double aspectRatio =
+        widget.media.first.aspectRatio ?? PostMediaView._defaultAspectRatio;
+
+    final ChipStyle? chipStyle =
+        widget.postType == PostType.property && widget.transactionType != null
+        ? kChipStyles[widget.transactionType!.apiValue]
+        : null;
+    final bool showTypeBadge =
+        chipStyle != null && widget.transactionLabel != null;
+    final bool showCounter = widget.media.length > 1;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.screenHorizontal,
-        vertical: AppSpacing.s,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedia),
-        child: AspectRatio(
-          aspectRatio: aspectRatio,
-          child: Stack(
-            children: [
-              PageView.builder(
-                itemCount: widget.media.length,
-                onPageChanged: (page) => setState(() => _page = page),
-                itemBuilder: (context, index) =>
-                    _MediaItem(media: widget.media[index]),
-              ),
-              if (widget.media.length > 1)
-                Positioned(
-                  bottom: AppSpacing.s,
-                  left: 0,
-                  right: 0,
-                  child: _PageDots(
-                    count: widget.media.length,
-                    activeIndex: _page,
-                  ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
+      child: Column(
+        children: [
+          AspectRatio(
+            aspectRatio: aspectRatio,
+            child: Stack(
+              children: [
+                PageView.builder(
+                  itemCount: widget.media.length,
+                  onPageChanged: (page) => setState(() => _page = page),
+                  itemBuilder: (context, index) =>
+                      _MediaItem(media: widget.media[index]),
                 ),
-            ],
+                if (showTypeBadge)
+                  Positioned(
+                    top: AppSpacing.s,
+                    left: AppSpacing.s,
+                    child: _TypeBadge(
+                      icon: chipStyle.icon,
+                      label: widget.transactionLabel!,
+                    ),
+                  ),
+                if (showCounter)
+                  Positioned(
+                    top: AppSpacing.s,
+                    right: AppSpacing.s,
+                    child: _CounterBadge(
+                      current: _page + 1,
+                      total: widget.media.length,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
+          if (showCounter)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.s),
+              child: _PageDots(count: widget.media.length, activeIndex: _page),
+            ),
+        ],
       ),
+    );
+  }
+}
+
+class _TypeBadge extends StatelessWidget {
+  const _TypeBadge({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.xs / 2,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.overlayScrim.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: AppSpacing.iconLocation,
+            color: AppColors.overlayContent,
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Text(label, style: AppTypography.durationBadge),
+        ],
+      ),
+    );
+  }
+}
+
+class _CounterBadge extends StatelessWidget {
+  const _CounterBadge({required this.current, required this.total});
+
+  final int current;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.xs / 2,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.overlayScrim.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+      ),
+      child: Text('$current/$total', style: AppTypography.durationBadge),
     );
   }
 }
@@ -164,19 +249,16 @@ class _PageDots extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(count, (index) {
         final bool active = index == activeIndex;
-        final double size =
-            active ? AppSpacing.mediaDotActive : AppSpacing.mediaDot;
+
         return Container(
           margin: const EdgeInsets.symmetric(
             horizontal: AppSpacing.mediaDotGap,
           ),
-          width: size,
-          height: size,
+          width:  AppSpacing.mediaDot,
+          height:  AppSpacing.mediaDot,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: active
-                ? AppColors.overlayContent
-                : AppColors.overlayContent.withValues(alpha: 0.5),
+            color: active ? AppColors.primaryDeep : AppColors.textDisabled,
           ),
         );
       }),

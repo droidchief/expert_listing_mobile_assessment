@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 /// contain a hex literal — read from these tokens instead.
 abstract final class AppColors {
   static const Color primary = Color(0xFF105B48);
+  static const Color primaryDeep = Color(0xFF2F4A12);
   static const Color primaryContainer = Color(0xFFE6F4EC);
 
   // Distinct from `primary` — used for the bottom nav's active tab
@@ -28,6 +29,7 @@ abstract final class AppColors {
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color textSecondaryDarker = Color(0xFF434343);
   static const Color textTertiary = Color(0xFF9CA3AF);
+  static const Color textDisabled = Color(0xFF7C7C7C);
 
   static const Color iconDefault = Color(0xFF1F2937);
 
