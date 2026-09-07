@@ -4,9 +4,7 @@ import '../domain/story_group.dart';
 
 // Mock data only — no networking. GET /stories on the real backend returns
 // rail data only (author, story count, has_unseen, one preview URL); it does
-// not return the individual stories a viewer needs. Wiring this feature to
-// the live API later will require either a new endpoint or an expanded
-// payload — the models here are already shaped for that eventual response.
+// not return the individual stories a viewer needs. 
 
 DateTime _ago(Duration duration) => DateTime.now().toUtc().subtract(duration);
 
@@ -38,15 +36,13 @@ Story _story(
       isSeen: isSeen,
     );
 
-/// Nine authors with mixed story counts and seen states, so the rail
-/// actually scrolls and cross-author advancing is worth testing.
+
 List<StoryGroup> mockStoryGroups() => [
       StoryGroup(
         author: _author(
           'ramosrealty',
           'Ramos Realty',
           isVerified: true,
-          isBusiness: true,
         ),
         stories: [
           _story('ramosrealty', 1, const Duration(minutes: 30)),

@@ -9,9 +9,6 @@ import '../../../../core/widgets/app_icon_button.dart';
 import '../../data/models/post.dart';
 import '../../domain/enums.dart';
 
-/// Top section of a `PostCard`: avatar, name row (with an optional role
-/// badge and verified tick), the post-type/relative-time meta line, and a
-/// trailing overflow button.
 class PostHeader extends StatelessWidget {
   const PostHeader({super.key, required this.post});
 

@@ -333,8 +333,12 @@ class _FeedBodyState extends State<_FeedBody> {
                 const SliverToBoxAdapter(child: _ComposerPromptRow()),
                 ...switch (state.status) {
                   FeedStatus.initial || FeedStatus.loading => [
+                    // The skeleton wraps its own scrollable ListView, so
+                    // hasScrollBody must be true — SliverFillRemaining's
+                    // non-scrollable mode queries the child's intrinsic
+                    // height, which a Viewport always refuses to answer.
                     const SliverFillRemaining(
-                      hasScrollBody: false,
+                      hasScrollBody: true,
                       child: FeedSkeletonList(),
                     ),
                   ],
