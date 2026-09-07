@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -14,8 +15,9 @@ import '../cubit/feed_cubit.dart';
 /// Like / comment / share, then a spacer, then views and bookmark.
 ///
 /// Like and comment are wired to the API (like optimistic via `FeedCubit`,
-/// comments via their own sheet + `CommentsCubit`); share and bookmark stay
-/// inert — out of scope for this part.
+/// comments via their own sheet + `CommentsCubit`); share opens the OS share
+/// sheet with a placeholder message and link (no real deep link exists yet);
+/// bookmark is local UI-only state, not persisted or sent to the API.
 class PostActionBar extends StatelessWidget {
   const PostActionBar({super.key, required this.post});
 
@@ -48,22 +50,51 @@ class PostActionBar extends StatelessWidget {
               );
             },
           ),
-          const AppIconButton(
+          AppIconButton(
             iconAsset: 'assets/images/share_icon.svg',
             semanticLabel: 'Share',
+            onTap: () => SharePlus.instance.share(
+              ShareParams(
+                text:
+                    'Check out this listing on Expert Listing: '
+                    'https://expertlisting.app/posts/${post.id}',
+              ),
+            ),
           ),
           const Spacer(),
           if (views.isNotEmpty) ...[
             Text('$views Views', style: AppTypography.countLabel),
             const SizedBox(width: AppSpacing.s),
           ],
-          AppIconButton(
-            iconAsset: 'assets/images/bookmark_icon.svg',
-            count: post.counts.bookmarks,
-            semanticLabel: 'Bookmark',
-          ),
+          const _BookmarkButton(),
         ],
       ),
+    );
+  }
+}
+
+/// Local-only bookmark toggle — turns `primaryText` green when active, with
+/// no backing API call and no count. Purely ephemeral UI state, so a
+/// `StatefulWidget` is correct here; it starts unbookmarked on every build.
+class _BookmarkButton extends StatefulWidget {
+  const _BookmarkButton();
+
+  @override
+  State<_BookmarkButton> createState() => _BookmarkButtonState();
+}
+
+class _BookmarkButtonState extends State<_BookmarkButton> {
+  bool _bookmarked = false;
+
+  void _toggle() => setState(() => _bookmarked = !_bookmarked);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppIconButton(
+      iconAsset: 'assets/images/bookmark_icon.svg',
+      color: _bookmarked ? AppColors.primaryText : null,
+      semanticLabel: 'Bookmark',
+      onTap: _toggle,
     );
   }
 }
