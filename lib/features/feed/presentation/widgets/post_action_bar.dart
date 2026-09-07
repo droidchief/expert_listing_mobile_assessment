@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -136,7 +137,12 @@ class _LikeButtonState extends State<_LikeButton> {
       button: true,
       label: likes > 0 ? 'Like, $likes' : 'Like',
       child: InkWell(
-        onTap: () => context.read<FeedCubit>().toggleLike(widget.post.id),
+        onTap: () {
+          // Only the like transition gets a haptic bump — unliking stays
+          // silent.
+          if (!hasLiked) HapticFeedback.heavyImpact();
+          context.read<FeedCubit>().toggleLike(widget.post.id);
+        },
         customBorder: const CircleBorder(),
         child: ConstrainedBox(
           constraints: const BoxConstraints(

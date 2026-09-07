@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -8,6 +10,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/chip_styles.dart';
 import '../../data/models/post_media.dart';
 import '../../domain/enums.dart';
+import '../cubit/feed_cubit.dart';
 
 /// Dedicated icon assets for the two most common transaction types — falls
 /// back to the (Material icon) `ChipStyle.icon` for every other type.
@@ -25,12 +28,16 @@ const Map<TransactionType, String> _typeBadgeAssets = {
 class PostMediaView extends StatefulWidget {
   const PostMediaView({
     super.key,
+    required this.postId,
+    required this.hasLiked,
     required this.media,
     required this.postType,
     this.transactionType,
     this.transactionLabel,
   });
 
+  final String postId;
+  final bool hasLiked;
   final List<PostMedia> media;
   final PostType postType;
   final TransactionType? transactionType;
@@ -44,6 +51,17 @@ class PostMediaView extends StatefulWidget {
 
 class _PostMediaViewState extends State<PostMediaView> {
   int _page = 0;
+  int _heartBurstId = 0;
+
+  void _handleDoubleTap() {
+    // Instagram-style: double tap only ever likes, never unlikes — and only
+    // the like transition gets a haptic bump.
+    if (!widget.hasLiked) {
+      HapticFeedback.heavyImpact();
+      context.read<FeedCubit>().toggleLike(widget.postId);
+    }
+    setState(() => _heartBurstId++);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,34 +84,41 @@ class _PostMediaViewState extends State<PostMediaView> {
         children: [
           AspectRatio(
             aspectRatio: aspectRatio,
-            child: Stack(
-              children: [
-                PageView.builder(
-                  itemCount: widget.media.length,
-                  onPageChanged: (page) => setState(() => _page = page),
-                  itemBuilder: (context, index) =>
-                      _MediaItem(media: widget.media[index]),
-                ),
-                if (showTypeBadge)
-                  Positioned(
-                    top: AppSpacing.m,
-                    left: AppSpacing.s,
-                    child: _TypeBadge(
-                      iconAsset: _typeBadgeAssets[widget.transactionType],
-                      icon: chipStyle.icon,
-                      label: widget.transactionLabel!,
-                    ),
+            child: GestureDetector(
+              onDoubleTap: _handleDoubleTap,
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    itemCount: widget.media.length,
+                    onPageChanged: (page) => setState(() => _page = page),
+                    itemBuilder: (context, index) =>
+                        _MediaItem(media: widget.media[index]),
                   ),
-                if (showCounter)
-                  Positioned(
-                    top: AppSpacing.m,
-                    right: AppSpacing.s,
-                    child: _CounterBadge(
-                      current: _page + 1,
-                      total: widget.media.length,
+                  if (showTypeBadge)
+                    Positioned(
+                      top: AppSpacing.m,
+                      left: AppSpacing.s,
+                      child: _TypeBadge(
+                        iconAsset: _typeBadgeAssets[widget.transactionType],
+                        icon: chipStyle.icon,
+                        label: widget.transactionLabel!,
+                      ),
                     ),
-                  ),
-              ],
+                  if (showCounter)
+                    Positioned(
+                      top: AppSpacing.m,
+                      right: AppSpacing.s,
+                      child: _CounterBadge(
+                        current: _page + 1,
+                        total: widget.media.length,
+                      ),
+                    ),
+                  if (_heartBurstId > 0)
+                    Center(
+                      child: _DoubleTapHeart(key: ValueKey(_heartBurstId)),
+                    ),
+                ],
+              ),
             ),
           ),
           if (showCounter)
@@ -102,6 +127,37 @@ class _PostMediaViewState extends State<PostMediaView> {
               child: _PageDots(count: widget.media.length, activeIndex: _page),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// One-shot heart pop-and-fade shown at the centre of the media on double
+/// tap. Recreated (via its `ValueKey`) on every double tap, which restarts
+/// the animation from scratch.
+class _DoubleTapHeart extends StatelessWidget {
+  const _DoubleTapHeart({super.key});
+
+  static const Duration _duration = Duration(milliseconds: 700);
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: 1),
+        duration: _duration,
+        curve: Curves.linear,
+        builder: (context, t, child) {
+          final double scale = t < 0.4
+              ? Curves.easeOutBack.transform(t / 0.4)
+              : 1.0;
+          final double opacity = t < 0.7 ? 1.0 : 1.0 - (t - 0.7) / 0.3;
+          return Opacity(
+            opacity: opacity.clamp(0.0, 1.0),
+            child: Transform.scale(scale: scale, child: child),
+          );
+        },
+        child: const Icon(Icons.favorite, color: AppColors.likeActive, size: 80),
       ),
     );
   }
@@ -275,8 +331,8 @@ class _PageDots extends StatelessWidget {
           margin: const EdgeInsets.symmetric(
             horizontal: AppSpacing.mediaDotGap,
           ),
-          width:  AppSpacing.mediaDot,
-          height:  AppSpacing.mediaDot,
+          width: AppSpacing.mediaDot,
+          height: AppSpacing.mediaDot,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: active ? AppColors.primaryDeep : AppColors.textDisabled,

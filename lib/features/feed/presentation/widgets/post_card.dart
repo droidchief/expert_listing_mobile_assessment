@@ -33,9 +33,11 @@ class PostCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PostHeader(post: post),
-              SizedBox(height: AppSpacing.s,),
+              SizedBox(height: AppSpacing.s),
               PostBody(body: post.body),
               PostMediaView(
+                postId: post.id,
+                hasLiked: post.viewerState.hasLiked,
                 media: post.media,
                 postType: post.postType,
                 transactionType: post.transactionType,
