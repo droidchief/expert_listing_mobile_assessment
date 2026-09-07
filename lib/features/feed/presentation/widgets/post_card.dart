@@ -24,6 +24,7 @@ class PostCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+    
         Container(
           color: AppColors.surface,
           padding: const EdgeInsets.only(

@@ -91,41 +91,51 @@ class _ComposerPromptRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.screenHorizontal,
         vertical: AppSpacing.s,
       ),
       child: GestureDetector(
         onTap: () => context.push(AppRoutes.composer),
         behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: AppSpacing.m,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.overlayScrim.withValues(alpha: 0.02),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-          ),
-          child: Row(
-            children: [
-              const AppAvatar(
-                size: AppSpacing.avatarPost,
-                url: _currentUserAvatarUrl,
-                name: 'Miracle H',
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: AppSpacing.m,
               ),
-              const SizedBox(width: AppSpacing.s),
-              Expanded(
-                child: Text(
-                  'Share a property, request or say something…',
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w400
+              decoration: BoxDecoration(
+                color: AppColors.overlayScrim.withValues(alpha: 0.02),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+              ),
+              child: Row(
+                children: [
+                  const AppAvatar(
+                    size: AppSpacing.avatarPost,
+                    url: _currentUserAvatarUrl,
+                    name: 'Miracle H',
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  const SizedBox(width: AppSpacing.s),
+                  Expanded(
+                    child: Text(
+                      'Share a property, request or say something…',
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w400
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+                  const SizedBox(height: AppSpacing.m),
+
+             Container(
+              height: 2,
+              width: double.infinity,
+              color: AppColors.divider,
+             )
+          ],
         ),
       ),
     );
@@ -292,6 +302,7 @@ class _FeedBodyState extends State<_FeedBody> {
             );
           },
         ),
+
         BlocListener<FeedFilterCubit, FeedFilter>(
           listener: (context, filter) {
             context.read<FeedCubit>().applyFilter(filter);
@@ -301,6 +312,7 @@ class _FeedBodyState extends State<_FeedBody> {
           },
         ),
       ],
+
       child: BlocBuilder<FeedCubit, FeedState>(
         builder: (context, state) {
           final int activeFilterCount = context
@@ -335,6 +347,7 @@ class _FeedBodyState extends State<_FeedBody> {
                       ),
                     ),
                   ],
+                  
                   FeedStatus.success =>
                     state.posts.isEmpty
                         ? [

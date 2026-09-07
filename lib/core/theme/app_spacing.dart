@@ -8,16 +8,16 @@ abstract final class AppSpacing {
   static const double xxl = 32;
 
   static const double screenHorizontal = 16;
-  static const double cardPaddingTop = 12;
+  static const double cardPaddingTop = 8;
   static const double cardPaddingBottom = 8;
-  static const double cardSeparator = 1;
+  static const double cardSeparator = 4;
 
   static const double radiusChip = 999;
   static const double radiusMedia = 12;
   static const double radiusSheet = 20;
   static const double radiusPill = 999;
 
-  static const double avatarPost = 36;
+  static const double avatarPost = 40;
   static const double avatarStory = 64;
   static const double avatarFacepile = 20;
   static const double facepileOverlap = -6;
