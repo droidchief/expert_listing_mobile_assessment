@@ -1,28 +1,93 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../feed/data/models/post.dart';
+import '../../../feed/data/models/post_media.dart';
+import '../../../feed/domain/enums.dart';
 import '../../data/mock_stories.dart';
+import '../../domain/story.dart';
+import '../../domain/story_author.dart';
 import '../../domain/story_group.dart';
 import 'stories_state.dart';
-
 
 class StoriesCubit extends Cubit<StoriesState> {
   StoriesCubit() : super(const StoriesState());
 
+  // The seeded current user (see `FeedCubit._currentUsername`) — already
+  // represented by "Your Story" in the rail, so never eligible to become a
+  // guest group of its own.
+  static const String _currentUsername = 'miracle.h';
+
   /// Loads mock data and sorts the rail: unseen groups first, then seen,
   /// newest activity first within each band. Ordering is only recomputed here
-  
+
   void load() {
     emit(state.copyWith(status: StoriesStatus.loading));
     try {
       final groups = mockStoryGroups()..sort(_compareGroups);
       emit(state.copyWith(status: StoriesStatus.success, groups: groups));
     } catch (e) {
-      emit(state.copyWith(
-        status: StoriesStatus.failure,
-        failureMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: StoriesStatus.failure,
+          failureMessage: e.toString(),
+        ),
+      );
     }
   }
+
+  /// Demo-only bridge from the live feed to the (otherwise fully mocked)
+  /// stories rail: turns up to [maxGroups] distinct, still-unrepresented
+  /// authors from the given feed page into guest story groups, built from
+  /// their own post media, so "has a story" is a real fact shared by both
+  /// the rail and the feed's avatar rings rather than two separate lies.
+  void addGuestGroupsFromPosts(List<Post> posts, {int maxGroups = 4}) {
+    final Set<String> existingAuthorIds = state.groups
+        .map((group) => group.author.id)
+        .toSet();
+    final List<StoryGroup> newGroups = [];
+
+    for (final post in posts) {
+      if (newGroups.length >= maxGroups) break;
+      if (post.author.username == _currentUsername) continue;
+      if (existingAuthorIds.contains(post.author.id)) continue;
+      if (post.media.isEmpty) continue;
+
+      final List<Story> stories = [
+        for (int i = 0; i < post.media.length; i++)
+          if (_storyImageUrl(post.media[i]) case final String url)
+            Story(
+              id: '${post.id}-guest-$i',
+              imageUrl: url,
+              createdAt: post.createdAt,
+            ),
+      ];
+      if (stories.isEmpty) continue;
+
+      existingAuthorIds.add(post.author.id);
+      newGroups.add(
+        StoryGroup(
+          author: StoryAuthor(
+            id: post.author.id,
+            username: post.author.username,
+            displayName: post.author.displayName,
+            avatarUrl:
+                post.author.avatarUrl ??
+                'https://i.pravatar.cc/150?u=${post.author.username}',
+            isVerified: post.author.isVerified,
+            isBusiness: post.author.isBusiness,
+          ),
+          stories: stories,
+        ),
+      );
+    }
+
+    if (newGroups.isEmpty) return;
+    final groups = [...state.groups, ...newGroups]..sort(_compareGroups);
+    emit(state.copyWith(groups: groups));
+  }
+
+  static String? _storyImageUrl(PostMedia media) =>
+      media.mediaType == MediaType.video ? media.thumbnailUrl : media.url;
 
   void markSeen(String authorId, String storyId) {
     final groups = [

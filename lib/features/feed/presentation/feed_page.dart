@@ -18,6 +18,7 @@ import '../../filters/presentation/cubit/filter_options_cubit.dart';
 import '../../filters/presentation/widgets/active_filters_bar.dart';
 import '../../filters/presentation/widgets/filters_button.dart';
 import '../../filters/presentation/widgets/filters_sheet.dart';
+import '../../stories/presentation/cubit/stories_cubit.dart';
 import '../../stories/presentation/widgets/stories_rail.dart';
 import 'cubit/feed_cubit.dart';
 import 'cubit/feed_state.dart';
@@ -307,6 +308,18 @@ class _FeedBodyState extends State<_FeedBody> {
             if (_scrollController.hasClients) {
               _scrollController.jumpTo(0);
             }
+          },
+        ),
+
+        // Demo bridge: once the feed's first page lands, hand a few of its
+        // authors to the (otherwise fully mocked) StoriesCubit so a handful
+        // of feed avatars get a real, rail-consistent story ring.
+        BlocListener<FeedCubit, FeedState>(
+          listenWhen: (previous, current) =>
+              previous.status != FeedStatus.success &&
+              current.status == FeedStatus.success,
+          listener: (context, state) {
+            context.read<StoriesCubit>().addGuestGroupsFromPosts(state.posts);
           },
         ),
       ],

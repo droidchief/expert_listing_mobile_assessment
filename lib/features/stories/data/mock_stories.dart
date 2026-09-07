@@ -70,7 +70,7 @@ List<StoryGroup> mockStoryGroups() => [
         ],
       ),
       StoryGroup(
-        author: _author('boyd.from', 'Boyd From', isBusiness: true),
+        author: _author('boyd.from', 'Boyd From', isBusiness: false),
         stories: [
           _story('boyd.from', 1, const Duration(hours: 9)),
           _story('boyd.from', 2, const Duration(hours: 10)),

@@ -1,5 +1,3 @@
-/// Formats a count the way the design does: zero counts render as an empty
-/// string so callers (e.g. `CountText`) can hide them automatically.
 String formatCount(int value) {
   if (value <= 0) return '';
   if (value < 1000) return value.toString();

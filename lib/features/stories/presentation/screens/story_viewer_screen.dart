@@ -12,10 +12,6 @@ import '../widgets/story_header.dart';
 import '../widgets/story_image.dart';
 import '../widgets/story_progress_bars.dart';
 
-/// Full-screen story viewer, opened at [initialGroupIndex]. Author-to-author
-/// movement is a horizontal `PageView` (natural swipe transition); within an
-/// author, stories switch in place, driven by a single `AnimationController`
-/// shared by the progress bar and the auto-advance.
 class StoryViewerScreen extends StatelessWidget {
   const StoryViewerScreen({super.key, required this.initialGroupIndex});
 
@@ -67,8 +63,6 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
     _progressController = AnimationController(vsync: this)
       ..addStatusListener(_onStatusChanged);
 
-    // _enterStory() calls precacheImage(context), which touches MediaQuery —
-    // deferred until after the first frame so the element is fully mounted.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _enterStory();
     });
@@ -89,8 +83,7 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
   }
 
   /// Resets the timer for whatever `_currentGroupIndex`/`_currentStoryIndex`
-  /// now point to, marks it seen immediately (not on completion), and
-  /// preloads the story that follows it.
+  /// now point to, marks it seen immediately (not on completion).
   void _enterStory() {
     _progressController
       ..stop()
@@ -125,7 +118,7 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
     _progressController.forward();
   }
 
-  // A broken URL shouldn't hang the story forever — let it play out on
+  // A broken URL shouldn't hang the story forever. Let it play out on
   // schedule same as a loaded image.
   void _onImageError() => _onImageLoaded();
 
@@ -155,14 +148,11 @@ class _StoryViewerBodyState extends State<_StoryViewerBody>
       );
       return;
     }
-    // Very first story of the very first group: restart, don't close.
+
     _enterStory();
   }
 
-  /// Fires for both a physical swipe between authors and our own
-  /// `nextPage`/`previousPage` calls. Forward entry resumes at the new
-  /// group's first unseen story; backward entry lands on its last story —
-  /// matching the tap-to-advance rules for cross-group movement.
+
   void _onPageChanged(int newIndex) {
     final bool goingForward = newIndex > _currentGroupIndex;
     setState(() {
@@ -271,10 +261,8 @@ class _StoryPage extends StatelessWidget {
                   color: AppColors.overlayContent,
                 ),
               ),
-            // Tap zones sit *below* the header in the stack (added before
-            // it here) so the header's own controls — the close button in
-            // particular — are hit-tested first and don't get swallowed by
-            // this full-screen gesture layer.
+              
+            // Tap zones sit *below* the header in the stack 
             if (isActive)
               GestureDetector(
                 behavior: HitTestBehavior.translucent,

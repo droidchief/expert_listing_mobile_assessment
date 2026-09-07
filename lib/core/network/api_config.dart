@@ -6,8 +6,7 @@ abstract final class ApiConfig {
     defaultValue: 'https://expert-listing-backend.vercel.app/api/v1',
   );
 
-  // miracle.h, the seeded current user. Auth is mocked via this header until
-  // it becomes a real JWT — this constant is that seam.
+
   static const String mockUserId = String.fromEnvironment(
     'MOCK_USER_ID',
     defaultValue: '00000000-0000-0000-0000-000000000001',

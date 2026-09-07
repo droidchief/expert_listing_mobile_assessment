@@ -11,6 +11,13 @@ import '../../../../core/theme/app_spacing.dart';
 /// lengths, not real design tokens — anything that corresponds to an
 /// actual layout dimension (avatar sizes, padding, media aspect ratio,
 /// icon size) still comes from `AppSpacing`.
+///
+/// IMPORTANT: `Shimmer.fromColors` paints its gradient over every
+/// non-transparent pixel of its child (BlendMode.srcATop). Nothing inside
+/// the shimmer may carry an opaque background or fill except `_Bone`
+/// itself — otherwise the gradient covers the whole rectangle and the
+/// bones become invisible against it. The card background and the divider
+/// are therefore drawn OUTSIDE the shimmer.
 class FeedSkeletonList extends StatelessWidget {
   const FeedSkeletonList({super.key, this.itemCount = 4});
 
@@ -18,13 +25,9 @@ class FeedSkeletonList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: AppColors.skeletonBase,
-      highlightColor: AppColors.skeletonHighlight,
-      child: ListView.builder(
-        itemCount: itemCount,
-        itemBuilder: (context, index) => const _PostCardSkeleton(),
-      ),
+    return ListView.builder(
+      itemCount: itemCount,
+      itemBuilder: (context, index) => const _PostCardSkeleton(),
     );
   }
 }
@@ -37,31 +40,39 @@ class _PostCardSkeleton extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
+        // Opaque card background lives outside the Shimmer.
+        ColoredBox(
           color: AppColors.surface,
-          padding: const EdgeInsets.only(
-            top: AppSpacing.cardPaddingTop,
-            bottom: AppSpacing.cardPaddingBottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              _HeaderSkeleton(),
-              SizedBox(height: AppSpacing.m),
-              _BodySkeleton(),
-              SizedBox(height: AppSpacing.m),
-              _LocationRowSkeleton(),
-              SizedBox(height: AppSpacing.s),
-              _MediaSkeleton(),
-              SizedBox(height: AppSpacing.xs),
-              _ActionBarSkeleton(),
-              SizedBox(height: AppSpacing.s),
-              _LikedByRowSkeleton(),
-              SizedBox(height: AppSpacing.s),
-              _TopCommentSkeleton(),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: AppSpacing.cardPaddingTop,
+              bottom: AppSpacing.cardPaddingBottom,
+            ),
+            child: Shimmer.fromColors(
+              baseColor: AppColors.skeletonBase,
+              highlightColor: AppColors.skeletonHighlight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  _HeaderSkeleton(),
+                  SizedBox(height: AppSpacing.m),
+                  _BodySkeleton(),
+                  SizedBox(height: AppSpacing.m),
+                  _LocationRowSkeleton(),
+                  SizedBox(height: AppSpacing.s),
+                  _MediaSkeleton(),
+                  SizedBox(height: AppSpacing.xs),
+                  _ActionBarSkeleton(),
+                  SizedBox(height: AppSpacing.s),
+                  _LikedByRowSkeleton(),
+                  SizedBox(height: AppSpacing.s),
+                  _TopCommentSkeleton(),
+                ],
+              ),
+            ),
           ),
         ),
+        // Divider is opaque too — keep it out of the shimmer.
         const _CardDivider(),
       ],
     );
@@ -73,30 +84,30 @@ class _HeaderSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.screenHorizontal,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _Bone(
+          _Bone(
             width: AppSpacing.avatarPost,
             height: AppSpacing.avatarPost,
             radius: AppSpacing.avatarPost / 2,
           ),
-          const SizedBox(width: AppSpacing.s),
+          SizedBox(width: AppSpacing.s),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 _Bone(width: 120, height: 14),
                 SizedBox(height: AppSpacing.xs),
                 _Bone(width: 90, height: 12),
               ],
             ),
           ),
-          const _Bone(width: 18, height: 18, radius: 4),
+          _Bone(width: 18, height: 18, radius: 4),
         ],
       ),
     );
@@ -127,20 +138,20 @@ class _LocationRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.screenHorizontal,
       ),
       child: Row(
         children: [
-          const _Bone(
+          _Bone(
             width: AppSpacing.iconLocation,
             height: AppSpacing.iconLocation,
             radius: 3,
           ),
-          const SizedBox(width: AppSpacing.xs),
-          const _Bone(width: 130, height: 12),
-          const Spacer(),
+          SizedBox(width: AppSpacing.xs),
+          _Bone(width: 130, height: 12),
+          Spacer(),
           _Bone(
             width: 90,
             height: 22,
@@ -157,11 +168,11 @@ class _MediaSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.screenHorizontal,
       ),
-      child: const AspectRatio(
+      child: AspectRatio(
         aspectRatio: 16 / 10,
         child: _Bone(
           width: double.infinity,
@@ -178,13 +189,13 @@ class _ActionBarSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.screenHorizontal - AppSpacing.s,
         vertical: AppSpacing.xs,
       ),
       child: Row(
-        children: const [
+        children: [
           _Bone(
             width: AppSpacing.iconAction,
             height: AppSpacing.iconAction,
@@ -219,19 +230,19 @@ class _LikedByRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.screenHorizontal,
       ),
       child: Row(
         children: [
-          const _Bone(
+          _Bone(
             width: AppSpacing.avatarFacepile,
             height: AppSpacing.avatarFacepile,
             radius: AppSpacing.avatarFacepile / 2,
           ),
-          const SizedBox(width: AppSpacing.s),
-          const _Bone(width: 160, height: 12),
+          SizedBox(width: AppSpacing.s),
+          _Bone(width: 160, height: 12),
         ],
       ),
     );

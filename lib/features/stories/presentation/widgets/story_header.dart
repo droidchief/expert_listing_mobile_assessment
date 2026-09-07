@@ -7,8 +7,6 @@ import '../../../../core/utils/relative_time.dart';
 import '../../../../core/widgets/app_avatar.dart';
 import '../../domain/story_author.dart';
 
-/// Author avatar, username, relative time, and a close button, over a
-/// top-down gradient scrim so it stays legible on a bright image.
 class StoryHeader extends StatelessWidget {
   const StoryHeader({
     super.key,
