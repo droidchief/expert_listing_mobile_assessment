@@ -21,8 +21,8 @@ class LikedByRow extends StatelessWidget {
     if (total <= 0) return const SizedBox.shrink();
 
     final users = likedByPreview.users;
-    final String firstUsername =
-        users.isNotEmpty ? users.first.username : '';
+    final int facepileCount = users.length.clamp(0, _maxFacepile);
+    final String firstUsername = users.isNotEmpty ? users.first.username : '';
 
     final String text = switch (total) {
       1 => 'Liked by $firstUsername',
@@ -38,15 +38,19 @@ class LikedByRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: AppSpacing.avatarFacepile +
-                (_maxFacepile - 1) *
-                    (AppSpacing.avatarFacepile + AppSpacing.facepileOverlap),
+            width: facepileCount == 0
+                ? 0
+                : AppSpacing.avatarFacepile +
+                      (facepileCount - 1) *
+                          (AppSpacing.avatarFacepile +
+                              AppSpacing.facepileOverlap),
             height: AppSpacing.avatarFacepile,
             child: Stack(
               children: [
-                for (int i = 0; i < users.length.clamp(0, _maxFacepile); i++)
+                for (int i = 0; i < facepileCount; i++)
                   Positioned(
-                    left: i *
+                    left:
+                        i *
                         (AppSpacing.avatarFacepile +
                             AppSpacing.facepileOverlap),
                     child: Container(

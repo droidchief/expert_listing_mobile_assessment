@@ -48,17 +48,17 @@ class _PlusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: AppSpacing.storyBadgeSize,
-      height: AppSpacing.storyBadgeSize,
+      width: 24,
+      height: 24,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.primary,
+        color: AppColors.storyRingUnseen,
         border: Border.all(color: AppColors.surface, width: 2),
       ),
       child: const Icon(
         Icons.add,
-        size: AppSpacing.storyBadgeSize - 8,
-        color: AppColors.surface,
+        size: 16,
+        color: AppColors.textPrimary,
       ),
     );
   }
