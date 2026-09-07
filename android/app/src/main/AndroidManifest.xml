@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- All API calls (dio) and remote image/video loading (cached_network_image)
+         need this. Image picking only reads from the gallery (no camera), and
+         "location" is a text search against a backend endpoint, not device
+         GPS — neither needs its own permission. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="expert_listing_mobile_assessment"
         android:name="${applicationName}"
