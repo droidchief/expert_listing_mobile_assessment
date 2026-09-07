@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -7,6 +8,13 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/chip_styles.dart';
 import '../../data/models/post_media.dart';
 import '../../domain/enums.dart';
+
+/// Dedicated icon assets for the two most common transaction types — falls
+/// back to the (Material icon) `ChipStyle.icon` for every other type.
+const Map<TransactionType, String> _typeBadgeAssets = {
+  TransactionType.forSale: 'assets/images/for_sale_icon.svg',
+  TransactionType.forRent: 'assets/images/for_rent_icon.svg',
+};
 
 /// Post media carousel. Hidden entirely when there is no media.
 ///
@@ -68,16 +76,17 @@ class _PostMediaViewState extends State<PostMediaView> {
                 ),
                 if (showTypeBadge)
                   Positioned(
-                    top: AppSpacing.s,
+                    top: AppSpacing.m,
                     left: AppSpacing.s,
                     child: _TypeBadge(
+                      iconAsset: _typeBadgeAssets[widget.transactionType],
                       icon: chipStyle.icon,
                       label: widget.transactionLabel!,
                     ),
                   ),
                 if (showCounter)
                   Positioned(
-                    top: AppSpacing.s,
+                    top: AppSpacing.m,
                     right: AppSpacing.s,
                     child: _CounterBadge(
                       current: _page + 1,
@@ -99,8 +108,9 @@ class _PostMediaViewState extends State<PostMediaView> {
 }
 
 class _TypeBadge extends StatelessWidget {
-  const _TypeBadge({required this.icon, required this.label});
+  const _TypeBadge({this.iconAsset, required this.icon, required this.label});
 
+  final String? iconAsset;
   final IconData icon;
   final String label;
 
@@ -118,11 +128,22 @@ class _TypeBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: AppSpacing.iconLocation,
-            color: AppColors.overlayContent,
-          ),
+          if (iconAsset != null)
+            SvgPicture.asset(
+              iconAsset!,
+              width: AppSpacing.iconLocation,
+              height: AppSpacing.iconLocation,
+              colorFilter: const ColorFilter.mode(
+                AppColors.overlayContent,
+                BlendMode.srcIn,
+              ),
+            )
+          else
+            Icon(
+              icon,
+              size: AppSpacing.iconLocation,
+              color: AppColors.overlayContent,
+            ),
           const SizedBox(width: AppSpacing.xs),
           Text(label, style: AppTypography.durationBadge),
         ],

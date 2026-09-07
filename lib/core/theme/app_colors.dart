@@ -16,7 +16,7 @@ abstract final class AppColors {
   // what each individual SVG happens to bake in.
   static const Color navIconInactive = Color(0xFF434343);
 
-  static const Color storyRingUnseen = Color(0xFF3FA34D);
+  static const Color storyRingUnseen = Color(0xFFA8DC66);
   static const Color storyRingSeen = Color(0xFFD9D9D9);
 
   static const Color surface = Color(0xFFFFFFFF);
