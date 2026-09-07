@@ -69,8 +69,6 @@ class FeedPage extends StatelessWidget {
           children: [
             StoriesRail(),
             StoriesRailDivider(),
-            _ComposerPromptRow(),
-            _FiltersRow(),
             Expanded(child: _FeedBody()),
           ],
         ),
@@ -199,6 +197,44 @@ class _TrendingSearchesButton extends StatelessWidget {
   }
 }
 
+/// Pins the Filters/Trending row to the top of the scroll view. Fixed
+/// estimated heights, not measured — `hasActiveFilters` picks between the
+/// two, matching whether `ActiveFiltersBar` is rendering anything.
+class _StickyFiltersHeaderDelegate extends SliverPersistentHeaderDelegate {
+  const _StickyFiltersHeaderDelegate({required this.hasActiveFilters});
+
+  final bool hasActiveFilters;
+
+  static const double _baseHeight = 58;
+  static const double _activeFiltersHeight = 44;
+
+  @override
+  double get minExtent =>
+      _baseHeight + (hasActiveFilters ? _activeFiltersHeight : 0);
+
+  @override
+  double get maxExtent => minExtent;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return const DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      ),
+      child: _FiltersRow(),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _StickyFiltersHeaderDelegate oldDelegate) =>
+      oldDelegate.hasActiveFilters != hasActiveFilters;
+}
+
 /// Owns the scroll controller that drives lazy pagination — purely
 /// ephemeral UI wiring, not feed state, so a `StatefulWidget` is correct
 /// here per the project's Cubit-for-state rule.
@@ -270,35 +306,65 @@ class _FeedBodyState extends State<_FeedBody> {
       ],
       child: BlocBuilder<FeedCubit, FeedState>(
         builder: (context, state) {
-          return switch (state.status) {
-            FeedStatus.initial ||
-            FeedStatus.loading =>
-              const FeedSkeletonList(),
-            FeedStatus.failure => _FeedFailureView(
-                failure: state.failure!,
-                onRetry: () => context.read<FeedCubit>().loadInitial(),
-              ),
-            FeedStatus.success => RefreshIndicator(
-                onRefresh: () => context.read<FeedCubit>().refresh(),
-                child: state.posts.isEmpty
-                    ? (context.watch<FeedFilterCubit>().state.isActive
-                        ? _FilteredEmptyView(
-                            onClear: () =>
-                                context.read<FeedFilterCubit>().clear(),
-                          )
-                        : const _EmptyFeedView())
-                    : ListView.builder(
-                        controller: _scrollController,
-                        itemCount: state.posts.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < state.posts.length) {
-                            return PostCard(post: state.posts[index]);
-                          }
-                          return _FeedFooter(state: state);
-                        },
+          final int activeFilterCount =
+              context.watch<FeedFilterCubit>().state.activeCount;
+          return RefreshIndicator(
+            onRefresh: () => context.read<FeedCubit>().refresh(),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _StickyFiltersHeaderDelegate(
+                    hasActiveFilters: activeFilterCount > 0,
+                  ),
+                ),
+                const SliverToBoxAdapter(child: _ComposerPromptRow()),
+                ...switch (state.status) {
+                  FeedStatus.initial ||
+                  FeedStatus.loading =>
+                    [
+                      const SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: FeedSkeletonList(),
                       ),
-              ),
-          };
+                    ],
+                  FeedStatus.failure => [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: _FeedFailureView(
+                          failure: state.failure!,
+                          onRetry: () => context.read<FeedCubit>().loadInitial(),
+                        ),
+                      ),
+                    ],
+                  FeedStatus.success => state.posts.isEmpty
+                      ? [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: context.watch<FeedFilterCubit>().state.isActive
+                                ? _FilteredEmptyView(
+                                    onClear: () =>
+                                        context.read<FeedFilterCubit>().clear(),
+                                  )
+                                : const _EmptyFeedView(),
+                          ),
+                        ]
+                      : [
+                          SliverList.builder(
+                            itemCount: state.posts.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index < state.posts.length) {
+                                return PostCard(post: state.posts[index]);
+                              }
+                              return _FeedFooter(state: state);
+                            },
+                          ),
+                        ],
+                },
+              ],
+            ),
+          );
         },
       ),
     );
