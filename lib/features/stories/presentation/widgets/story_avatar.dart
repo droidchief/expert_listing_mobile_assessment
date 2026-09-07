@@ -35,7 +35,7 @@ class StoryAvatar extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               group.author.displayName,
-              style: AppTypography.storyLabel,
+              style: AppTypography.storyLabel.copyWith(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,

@@ -22,12 +22,16 @@ class YourStoryAvatar extends StatelessWidget {
             size: AppSpacing.avatarStory,
             url: avatarUrl,
             name: 'Your Story',
+            // No visible ring, but matches the ring's outer size so the
+            // avatar (and the label below it) aligns with the other,
+            // ringed, entries in the rail.
+            ringColor: Colors.transparent,
             badge: const _PlusBadge(),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Your Story',
-            style: AppTypography.storyLabel,
+              style: AppTypography.storyLabel.copyWith(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,

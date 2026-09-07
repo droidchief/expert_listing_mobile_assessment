@@ -49,7 +49,7 @@ class _StoriesRailState extends State<StoriesRail> {
             itemBuilder: (context, index) {
               if (index == 0) {
                 return const Padding(
-                  padding: EdgeInsets.only(right: AppSpacing.s),
+                  padding: EdgeInsets.only(right: AppSpacing.l),
                   child: YourStoryAvatar(
                     avatarUrl: StoriesRail._viewerAvatarUrl,
                   ),
@@ -57,7 +57,7 @@ class _StoriesRailState extends State<StoriesRail> {
               }
               final groupIndex = index - 1;
               return Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.s),
+                padding: const EdgeInsets.only(right: AppSpacing.l),
                 child: StoryAvatar(
                   group: groups[groupIndex],
                   onTap: () => _openViewer(groupIndex),
