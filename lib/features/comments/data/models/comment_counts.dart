@@ -3,8 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'comment_counts.g.dart';
 
-/// `likes` is always 0 today — comment likes are out of scope, so nothing
-/// renders it. Still parsed so a future non-zero value doesn't throw.
 @JsonSerializable()
 class CommentCounts extends Equatable {
   const CommentCounts({required this.likes, required this.replies});

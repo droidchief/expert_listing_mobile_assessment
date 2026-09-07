@@ -6,8 +6,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_avatar.dart';
 import '../../data/models/liked_by_preview.dart';
 
-/// Overlapping facepile + "Liked by X and N others" text. Hidden when the
-/// total is 0.
+
 class LikedByRow extends StatelessWidget {
   const LikedByRow({super.key, required this.likedByPreview});
 

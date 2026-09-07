@@ -8,8 +8,6 @@ import '../../domain/media_draft.dart';
 
 const double _thumbSize = AppSpacing.mediaThumb;
 
-/// Horizontal strip of 72×72 thumbnails plus a trailing `+` tile, capped
-/// at [ComposerState.maxMedia].
 class MediaStrip extends StatelessWidget {
   const MediaStrip({
     super.key,

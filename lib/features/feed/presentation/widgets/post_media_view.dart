@@ -12,19 +12,12 @@ import '../../data/models/post_media.dart';
 import '../../domain/enums.dart';
 import '../cubit/feed_cubit.dart';
 
-/// Dedicated icon assets for the two most common transaction types — falls
-/// back to the (Material icon) `ChipStyle.icon` for every other type.
+
 const Map<TransactionType, String> _typeBadgeAssets = {
   TransactionType.forSale: 'assets/images/for_sale_icon.svg',
   TransactionType.forRent: 'assets/images/for_rent_icon.svg',
 };
 
-/// Post media carousel. Hidden entirely when there is no media.
-///
-/// Reserves its height via `AspectRatio` from the first item's aspect ratio
-/// (default `16/10`) before any image loads — this is what stops the feed
-/// juddering as it scrolls. Full-bleed: unlike the rest of the card, this is
-/// the only element without the screen's horizontal margin.
 class PostMediaView extends StatefulWidget {
   const PostMediaView({
     super.key,
@@ -54,8 +47,6 @@ class _PostMediaViewState extends State<PostMediaView> {
   int _heartBurstId = 0;
 
   void _handleDoubleTap() {
-    // Instagram-style: double tap only ever likes, never unlikes — and only
-    // the like transition gets a haptic bump.
     if (!widget.hasLiked) {
       HapticFeedback.heavyImpact();
       context.read<FeedCubit>().toggleLike(widget.postId);
@@ -132,9 +123,6 @@ class _PostMediaViewState extends State<PostMediaView> {
   }
 }
 
-/// One-shot heart pop-and-fade shown at the centre of the media on double
-/// tap. Recreated (via its `ValueKey`) on every double tap, which restarts
-/// the animation from scratch.
 class _DoubleTapHeart extends StatelessWidget {
   const _DoubleTapHeart({super.key});
 

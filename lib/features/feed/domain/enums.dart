@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-/// The kind of post. Every enum in this file carries an `unknown` member so
-/// that a value the backend adds later renders as unknown instead of
-/// throwing a `fromJson` exception mid-scroll.
+
 enum PostType {
   @JsonValue('general')
   general,
@@ -14,8 +12,6 @@ enum PostType {
   unknown,
 }
 
-/// The API sends `transaction_label` and `role_label` directly, but not a
-/// label for `post_type` — this is the client-side equivalent.
 extension PostTypeLabel on PostType {
   String get label => switch (this) {
         PostType.general => 'General',
@@ -42,8 +38,6 @@ enum TransactionType {
   unknown,
 }
 
-/// The raw API enum string, for looking chip colours up in `kChipStyles`
-/// (which is keyed by that string, not by the Dart enum name).
 extension TransactionTypeApiValue on TransactionType {
   String get apiValue => switch (this) {
         TransactionType.forSale => 'for_sale',

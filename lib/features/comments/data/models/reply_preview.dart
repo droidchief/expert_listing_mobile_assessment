@@ -19,7 +19,6 @@ class ReplyPreview extends Equatable {
 
   final String id;
   final String body;
-  // UTC — convert with .toLocal() at render time only.
   final DateTime createdAt;
   final ReplyAuthor author;
 

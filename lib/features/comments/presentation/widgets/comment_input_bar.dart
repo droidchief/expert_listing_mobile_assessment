@@ -7,9 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_avatar.dart';
 import '../cubit/comments_cubit.dart';
 
-/// Pinned at the bottom of the sheet, above the list. Local ephemeral UI
-/// state (the text field, its focus) — a `StatefulWidget` is correct here;
-/// comment data itself still only ever changes through `CommentsCubit`.
+
 class CommentInputBar extends StatefulWidget {
   const CommentInputBar({super.key, required this.sheetController});
 

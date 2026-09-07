@@ -4,20 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// A shimmering placeholder shaped like `PostCard` — same section order
-/// (header, body, location/chip, media, action bar, liked-by, top comment)
-/// so the loading state reads as "this card, blank" rather than a generic
-/// block. Bone widths/heights are decorative approximations of text-line
-/// lengths, not real design tokens — anything that corresponds to an
-/// actual layout dimension (avatar sizes, padding, media aspect ratio,
-/// icon size) still comes from `AppSpacing`.
-///
-/// IMPORTANT: `Shimmer.fromColors` paints its gradient over every
-/// non-transparent pixel of its child (BlendMode.srcATop). Nothing inside
-/// the shimmer may carry an opaque background or fill except `_Bone`
-/// itself — otherwise the gradient covers the whole rectangle and the
-/// bones become invisible against it. The card background and the divider
-/// are therefore drawn OUTSIDE the shimmer.
+
 class FeedSkeletonList extends StatelessWidget {
   const FeedSkeletonList({super.key, this.itemCount = 4});
 

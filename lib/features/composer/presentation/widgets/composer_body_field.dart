@@ -7,7 +7,6 @@ import '../../../../core/widgets/app_avatar.dart';
 
 const int _counterThreshold = 4500;
 
-/// Matches the feed's composer prompt: an avatar beside a multiline field.
 class ComposerBodyField extends StatelessWidget {
   const ComposerBodyField({
     super.key,

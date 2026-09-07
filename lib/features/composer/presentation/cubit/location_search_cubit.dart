@@ -6,8 +6,6 @@ import '../../../../core/error/failure.dart';
 import '../../data/locations_repository.dart';
 import 'location_search_state.dart';
 
-/// Debounces keystrokes 300ms before calling `GET /locations?q=`. Loads
-/// the most-used locations (empty query) immediately on construction.
 class LocationSearchCubit extends Cubit<LocationSearchState> {
   LocationSearchCubit(this._repository) : super(const LocationSearchState()) {
     _fetch('');

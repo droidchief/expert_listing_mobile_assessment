@@ -43,7 +43,6 @@ class Comment extends Equatable {
   @JsonKey(fromJson: _repliesFromJson, toJson: _repliesToJson)
   final List<ReplyPreview> repliesPreview;
   final bool isEdited;
-  // UTC — convert with .toLocal() at render time only.
   final DateTime createdAt;
 
   Map<String, dynamic> toJson() => _$CommentToJson(this);

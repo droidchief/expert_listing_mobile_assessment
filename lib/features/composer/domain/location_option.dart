@@ -3,11 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'location_option.g.dart';
 
-/// A `GET /locations` result. Distinct from the filters feature's own
-/// `LocationOption` — that one mirrors `/filters/options`'s smaller
-/// `{id, label, post_count}` shape, this one the fuller shape `/locations`
-/// actually returns. The two features never import each other's, so the
-/// shared class name doesn't collide.
 @JsonSerializable()
 class LocationOption extends Equatable {
   const LocationOption({

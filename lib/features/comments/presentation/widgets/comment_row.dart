@@ -9,9 +9,7 @@ import '../../data/models/comment.dart';
 import '../../data/models/reply_preview.dart';
 import '../cubit/comment_item.dart';
 
-/// One root comment: avatar, name/time header, body, then its (read-only,
-/// at most 2) replies indented beneath. No divider between rows —
-/// whitespace separates them, matching the app's flat, hairline-only style.
+
 class CommentRow extends StatelessWidget {
   const CommentRow({
     super.key,
@@ -101,7 +99,6 @@ class _Header extends StatelessWidget {
   final String displayName;
   final bool isVerified;
 
-  /// Null hides the timestamp — used for a pending (not-yet-sent) comment.
   final DateTime? createdAt;
   final bool isEdited;
 

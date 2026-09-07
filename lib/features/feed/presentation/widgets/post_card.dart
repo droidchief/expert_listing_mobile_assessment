@@ -10,9 +10,6 @@ import 'post_header.dart';
 import 'post_media_view.dart';
 import 'top_comment_preview.dart';
 
-/// A single post in the feed. Flat, flush section — no elevation, no
-/// rounded corners, no margin — separated from the next card by a
-/// full-bleed 1px divider.
 class PostCard extends StatelessWidget {
   const PostCard({super.key, required this.post});
 

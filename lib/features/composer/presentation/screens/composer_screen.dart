@@ -107,10 +107,7 @@ class _ComposerScreenState extends State<ComposerScreen> {
 
   Future<void> _handleClose() async {
     if (await _confirmDiscard() && mounted) {
-      // `pop`, not `maybePop` — the PopScope guarding this route reports
-      // canPop: false, and maybePop respects that (so it would silently
-      // no-op here); pop() is unconditional and actually leaves the screen
-      // now that the user has confirmed.
+
       Navigator.of(context).pop();
     }
   }
@@ -163,7 +160,6 @@ class _ComposerScreenState extends State<ComposerScreen> {
             listener: (context, state) {
               if (state.status == ComposerStatus.success) {
                 context.read<FeedCubit>().refresh();
-                // pop(), not maybePop() — see _handleClose.
                 Navigator.of(context).pop();
               } else if (state.status == ComposerStatus.failure &&
                   state.failure != null) {

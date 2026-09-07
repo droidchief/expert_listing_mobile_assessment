@@ -3,8 +3,6 @@ import '../../../core/network/dio_client.dart';
 import 'models/comments_page.dart';
 import 'models/create_comment_result.dart';
 
-/// Talks to `GET/POST /posts/:id/comments`. Failures propagate as-is —
-/// [DioClient] has already converted them to [Failure].
 class CommentsRepository {
   const CommentsRepository(this._dioClient);
 
@@ -31,10 +29,7 @@ class CommentsRepository {
     }
   }
 
-  /// `clientToken` must be generated once per send *attempt* and reused
-  /// across retries of that same attempt — the server uses it to make the
-  /// write idempotent (a stalled request retried with the same token
-  /// returns the original comment instead of creating a duplicate).
+
   Future<CreateCommentResult> createComment({
     required String postId,
     required String body,

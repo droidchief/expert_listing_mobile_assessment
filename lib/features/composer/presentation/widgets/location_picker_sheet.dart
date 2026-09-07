@@ -10,8 +10,6 @@ import '../../domain/location_option.dart';
 import '../cubit/location_search_cubit.dart';
 import '../cubit/location_search_state.dart';
 
-/// Same modal pattern as the comments and filter sheets. Returns the
-/// selected [LocationOption], or null if dismissed without a selection.
 Future<LocationOption?> showLocationPickerSheet(BuildContext context) {
   return showModalBottomSheet<LocationOption>(
     context: context,

@@ -7,8 +7,6 @@ import '../../../comments/presentation/widgets/comments_sheet.dart';
 import '../../data/models/post.dart';
 import '../cubit/feed_cubit.dart';
 
-/// Username and comment body on one wrapping line, plus a "View all N
-/// comments" link. Hidden entirely when the post has no `topComment`.
 class TopCommentPreview extends StatelessWidget {
   const TopCommentPreview({super.key, required this.post});
 

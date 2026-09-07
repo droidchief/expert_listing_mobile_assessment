@@ -4,9 +4,6 @@ import '../../filters/domain/feed_filter.dart';
 import 'models/feed_page.dart';
 import 'models/like_result.dart';
 
-/// Talks to `GET /posts`. Failures propagate as-is — [DioClient] has
-/// already converted them to [Failure]; this repository does not catch or
-/// convert anything itself.
 class FeedRepository {
   const FeedRepository(this._dioClient);
 
@@ -35,9 +32,6 @@ class FeedRepository {
     }
   }
 
-  /// Always sends an explicit action — never an empty (toggle) body, which
-  /// would be unsafe to retry. `{"action":"like"}` / `{"action":"unlike"}`
-  /// are idempotent.
   Future<LikeResult> setLike({
     required String postId,
     required bool liked,

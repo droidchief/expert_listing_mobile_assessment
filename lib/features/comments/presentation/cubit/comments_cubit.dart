@@ -11,10 +11,7 @@ import '../../data/models/comment_viewer_state.dart';
 import 'comment_item.dart';
 import 'comments_state.dart';
 
-/// One instance per open sheet — created when it opens, closed when it
-/// dismisses. [onCommentCountChanged] pushes the post's new comment total
-/// back to `FeedCubit` on a successful send, so the card behind the sheet
-/// updates without a refetch.
+
 class CommentsCubit extends Cubit<CommentsState> {
   CommentsCubit({
     required String postId,
@@ -28,7 +25,6 @@ class CommentsCubit extends Cubit<CommentsState> {
   final CommentsRepository _repository;
   final void Function(int newCommentCount)? onCommentCountChanged;
 
-  // The seeded current user. A proper `/me` call replaces this later.
   static const String _currentUserId = '00000000-0000-0000-0000-000000000001';
   static const String _currentUsername = 'miracle.h';
   static const String _currentDisplayName = 'Miracle H';
@@ -53,8 +49,7 @@ class CommentsCubit extends Cubit<CommentsState> {
     }
   }
 
-  /// No-op unless the list is loaded, has another page, and isn't already
-  /// fetching one — same guard as the feed's `loadMore`.
+  
   Future<void> loadMore() async {
     if (!state.hasMore ||
         state.isLoadingMore ||
@@ -80,9 +75,7 @@ class CommentsCubit extends Cubit<CommentsState> {
     }
   }
 
-  /// Inserts an optimistic pending row at the top immediately, then sends.
-  /// The caller clears the input and keeps focus regardless of outcome —
-  /// this method never blocks on the network.
+
   Future<void> send(String body) async {
     final String trimmed = body.trim();
     if (trimmed.isEmpty) return;
@@ -98,8 +91,6 @@ class CommentsCubit extends Cubit<CommentsState> {
     await _submit(clientToken, trimmed);
   }
 
-  /// Reuses the same `clientToken` as the original attempt — a fresh token
-  /// on retry would defeat the server's idempotency check.
   Future<void> retry(String clientToken) async {
     final int index = state.comments.indexWhere((c) => c.clientToken == clientToken);
     if (index == -1) return;

@@ -2,8 +2,6 @@ import '../../../core/error/failure.dart';
 import '../../../core/network/dio_client.dart';
 import '../domain/location_option.dart';
 
-/// Talks to `GET /locations`. An empty query returns the most-used
-/// locations — the right default for an unopened search.
 class LocationsRepository {
   const LocationsRepository(this._dioClient);
 

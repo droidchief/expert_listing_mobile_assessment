@@ -4,8 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 
-/// Quiet, understated empty state — no illustration, no emoji, no bounce,
-/// matching the rest of the app's restraint.
+
 class CommentsEmptyView extends StatelessWidget {
   const CommentsEmptyView({super.key});
 

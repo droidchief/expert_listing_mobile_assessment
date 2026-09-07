@@ -4,7 +4,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 
-/// Sticky above the keyboard — add photo, add location.
 class ComposerBottomBar extends StatelessWidget {
   const ComposerBottomBar({
     super.key,

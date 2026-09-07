@@ -78,10 +78,6 @@ class FeedPage extends StatelessWidget {
   }
 }
 
-/// Opens the composer. The feed's `FeedCubit` is provided above the router
-/// (in app.dart), so `/composer` — a full-screen route, also reachable
-/// from the bottom nav's "+" tab — can call `refresh()` on it after a
-/// successful post without this prompt needing to pass anything through.
 class _ComposerPromptRow extends StatelessWidget {
   const _ComposerPromptRow();
 
@@ -241,9 +237,6 @@ class _StickyFiltersHeaderDelegate extends SliverPersistentHeaderDelegate {
       oldDelegate.hasActiveFilters != hasActiveFilters;
 }
 
-/// Owns the scroll controller that drives lazy pagination — purely
-/// ephemeral UI wiring, not feed state, so a `StatefulWidget` is correct
-/// here per the project's Cubit-for-state rule.
 class _FeedBody extends StatefulWidget {
   const _FeedBody();
 
@@ -311,9 +304,7 @@ class _FeedBodyState extends State<_FeedBody> {
           },
         ),
 
-        // Demo bridge: once the feed's first page lands, hand a few of its
-        // authors to the (otherwise fully mocked) StoriesCubit so a handful
-        // of feed avatars get a real, rail-consistent story ring.
+        
         BlocListener<FeedCubit, FeedState>(
           listenWhen: (previous, current) =>
               previous.status != FeedStatus.success &&
@@ -344,10 +335,6 @@ class _FeedBodyState extends State<_FeedBody> {
                 const SliverToBoxAdapter(child: _ComposerPromptRow()),
                 ...switch (state.status) {
                   FeedStatus.initial || FeedStatus.loading => [
-                    // The skeleton wraps its own scrollable ListView, so
-                    // hasScrollBody must be true — SliverFillRemaining's
-                    // non-scrollable mode queries the child's intrinsic
-                    // height, which a Viewport always refuses to answer.
                     const SliverFillRemaining(
                       hasScrollBody: true,
                       child: FeedSkeletonList(),

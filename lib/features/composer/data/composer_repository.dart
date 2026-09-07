@@ -7,8 +7,6 @@ class ComposerRepository {
 
   final DioClient _dioClient;
 
-  /// Every field the user did not fill is omitted — never sent as null.
-  /// Returns the created post's id.
   Future<String> createPost({
     required String postType,
     required String body,

@@ -16,11 +16,8 @@ class FeedCubit extends Cubit<FeedState> {
 
   final FeedRepository _repository;
 
-  // The currently applied filter — kept in sync with `FeedFilterCubit` by
-  // the feed screen and sent alongside every fetch, including pagination.
   FeedFilter _filter = FeedFilter.empty;
 
-  // The seeded current user. A proper `/me` call replaces this later.
   static const String _currentUsername = 'miracle.h';
   static const String _currentUserAvatarUrl =
       'https://i.pravatar.cc/150?u=miracle.h';
@@ -28,9 +25,7 @@ class FeedCubit extends Cubit<FeedState> {
   static const int _facepileCap = 3;
 
   final Map<String, Timer> _likeTimers = {};
-  // The state a post was in before the current burst of taps started —
-  // captured once per burst so a failure rolls all the way back to it,
-  // not to whatever the previous optimistic frame happened to be.
+
   final Map<String, Post> _likeSnapshots = {};
 
   Future<void> loadInitial() async {
@@ -49,10 +44,7 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  /// No-op unless the feed is loaded, has another page, and isn't already
-  /// fetching one — the guard that stops a scroll listener from firing
-  /// overlapping requests as the user keeps scrolling past the trigger
-  /// point.
+
   Future<void> loadMore() async {
     if (!state.hasMore ||
         state.isLoadingMore ||
@@ -77,8 +69,7 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  /// Fetches page 1 without clearing what's already on screen; only
-  /// replaces `posts` once the new page has actually arrived.
+
   Future<void> refresh() async {
     emit(state.copyWith(isRefreshing: true, clearLoadMoreFailure: true));
     try {
@@ -93,9 +84,7 @@ class FeedCubit extends Cubit<FeedState> {
         clearFailure: true,
       ));
     } on Failure catch (f) {
-      // Non-fatal, same as a load-more failure: the posts already on
-      // screen are untouched, so this surfaces through the same inline
-      // footer rather than replacing the list with an error screen.
+
       emit(state.copyWith(isRefreshing: false, loadMoreFailure: f));
     }
   }
@@ -105,9 +94,6 @@ class FeedCubit extends Cubit<FeedState> {
     await loadMore();
   }
 
-  /// Mixing filtered and unfiltered results is a correctness bug, not a
-  /// rendering detail — so this replaces `posts` outright rather than
-  /// merging, and resets pagination from scratch.
   Future<void> applyFilter(FeedFilter filter) async {
     _filter = filter;
     emit(state.copyWith(
@@ -132,9 +118,7 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  /// Optimistic like/unlike with rollback. Flips the heart immediately,
-  /// then debounces 400ms per post id before calling the API with the
-  /// *final* intended state — five rapid taps send one request, not five.
+
   Future<void> toggleLike(String postId) async {
     final int index = state.posts.indexWhere((p) => p.id == postId);
     if (index == -1) return;
@@ -199,9 +183,7 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  /// The API never returns an updated `liked_by_preview`, so the facepile
-  /// is adjusted locally — a little drift against the server is fine and
-  /// self-corrects on the next feed load.
+
   LikedByPreview _adjustFacepile(LikedByPreview preview, bool liked) {
     if (liked) {
       final bool alreadyPresent =
@@ -228,9 +210,7 @@ class FeedCubit extends Cubit<FeedState> {
 
   void clearActionFailure() => emit(state.copyWith(clearActionFailure: true));
 
-  /// Pushed by the comments sheet after a successful send — the post's new
-  /// total from the API, so the card behind the sheet updates without a
-  /// refetch.
+
   void updateCommentCount(String postId, int commentCount) {
     final int index = state.posts.indexWhere((p) => p.id == postId);
     if (index == -1) return;

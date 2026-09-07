@@ -3,9 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'like_result.g.dart';
 
-/// The `data` object from `POST /posts/:id/like` — the authoritative
-/// post-write like count and state. Does not include `liked_by_preview`;
-/// the facepile is adjusted locally.
 @JsonSerializable()
 class LikeResult extends Equatable {
   const LikeResult({

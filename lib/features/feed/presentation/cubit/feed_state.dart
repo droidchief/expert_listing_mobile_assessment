@@ -26,20 +26,12 @@ class FeedState extends Equatable {
   final bool isLoadingMore;
   final bool isRefreshing;
 
-  /// Fatal — the first page failed. Replaces the screen.
   final Failure? failure;
 
-  /// Non-fatal — page N failed. The posts already on screen stay; this
-  /// only drives an inline footer error.
   final Failure? loadMoreFailure;
 
-  /// Transient — a single card action (like) failed after the optimistic
-  /// update was already rolled back. Consumed once (e.g. as a SnackBar)
-  /// and cleared, so it doesn't re-fire on every rebuild.
   final Failure? actionFailure;
 
-  /// The post id `actionFailure` belongs to, so a Retry action knows what
-  /// to retry.
   final String? actionFailurePostId;
 
   FeedState copyWith({

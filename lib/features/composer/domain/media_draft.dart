@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 
 enum MediaUploadState { uploading, uploaded, failed }
 
-/// One selected image's local state — its picked file, upload progress,
-/// and (once done) the fields `POST /posts` needs for its `media` entry.
 class MediaDraft extends Equatable {
   const MediaDraft({
     required this.id,
@@ -19,8 +17,6 @@ class MediaDraft extends Equatable {
     this.byteSize,
   });
 
-  /// Locally generated — used for widget keys and to address this draft
-  /// for removal/retry, never sent to the server.
   final String id;
   final String localPath;
   final int position;

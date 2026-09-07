@@ -11,8 +11,6 @@ const List<(String, String)> pricePeriods = [
   ('total', 'Total'),
 ];
 
-/// Collapsed by default — expands to price, price period, bedrooms,
-/// bathrooms and parking, all optional. `property` posts only.
 class PropertyDetailsSection extends StatefulWidget {
   const PropertyDetailsSection({
     super.key,

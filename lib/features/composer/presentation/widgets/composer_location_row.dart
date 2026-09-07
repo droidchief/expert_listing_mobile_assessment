@@ -5,9 +5,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/location_option.dart';
 
-/// Shown only when a location is selected — a pin, its label, and a
-/// clear `×`. When nothing is selected the row is absent entirely; only
-/// the bottom action bar's "Location" button shows.
+
 class ComposerLocationRow extends StatelessWidget {
   const ComposerLocationRow({
     super.key,

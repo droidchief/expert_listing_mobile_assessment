@@ -136,9 +136,6 @@ class ComposerCubit extends Cubit<ComposerState> {
         minHeight: targetHeight,
         quality: _quality,
         format: CompressFormat.webp,
-        // EXIF (including GPS) is stripped by not requesting it be kept —
-        // property photos routinely carry a GPS tag a user never meant to
-        // publish.
       );
 
       final (int finalWidth, int finalHeight) =
@@ -204,10 +201,7 @@ class ComposerCubit extends Cubit<ComposerState> {
       );
       emit(state.copyWith(status: ComposerStatus.success, createdPostId: id));
     } on Failure catch (f) {
-      // The form stays fully editable and everything the user typed is
-      // untouched — `failure` only carries the message for a one-off
-      // SnackBar; it is not a dead-end screen the way a fatal feed-load
-      // failure is.
+
       emit(state.copyWith(status: ComposerStatus.failure, failure: f));
     }
   }

@@ -4,8 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// Shimmering placeholder shaped like [CommentRow], shown while the first
-/// page of comments is loading.
+
 class CommentsSkeletonList extends StatelessWidget {
   const CommentsSkeletonList({super.key, this.itemCount = 4});
 

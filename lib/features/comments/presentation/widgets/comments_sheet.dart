@@ -15,11 +15,6 @@ import 'comment_row.dart';
 import 'comments_empty_view.dart';
 import 'comments_skeleton.dart';
 
-/// Opens the draggable comments sheet for [postId]. [onCommentCountChanged]
-/// is called with the post's new total after a successful send, so the
-/// caller can push it into `FeedCubit` — the sheet's own `CommentsCubit`
-/// has no reach into the feed's provider tree (a modal sheet is a sibling
-/// route on the navigator, not a descendant of the page that opened it).
 Future<void> showCommentsSheet(
   BuildContext context, {
   required String postId,
@@ -82,15 +77,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
     super.dispose();
   }
 
-  // A DraggableScrollableSheet clamps its own extent at minChildSize rather
-  // than reporting anything below it, and — nested inside a modal bottom
-  // sheet — it captures the drag gesture for its own resizing rather than
-  // letting the route's drag-to-dismiss see it. So "drag below min to
-  // dismiss" is driven explicitly: once the sheet has settled somewhere
-  // above the floor, sliding back down to that floor pops the route. The
-  // `_reachedAboveMin` guard exists so the opening animation (which grows
-  // the sheet up *through* minExtent on its way to initialChildSize) never
-  // gets mistaken for the user dragging back down to it.
+
   bool _reachedAboveMin = false;
 
   bool _onSheetNotification(DraggableScrollableNotification notification) {

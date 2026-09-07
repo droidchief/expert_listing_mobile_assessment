@@ -5,11 +5,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../data/models/post.dart';
 
-/// Location pin + label. Rendered inside `PostHeader`'s name/meta column, so
-/// it lines up under the post type/time line rather than the avatar.
-/// Hidden entirely when the post has no `locationLabel`. The transaction
-/// type (e.g. "For Sale") is shown as a badge on the media instead — see
-/// `PostMediaView`.
+
 class PostLocationRow extends StatelessWidget {
   const PostLocationRow({super.key, required this.post});
 

@@ -23,10 +23,8 @@ class CommentsState extends Equatable {
   final bool hasMore;
   final bool isLoadingMore;
 
-  /// Fatal — the first load failed.
   final Failure? failure;
 
-  /// Non-fatal — page N failed. The list already on screen stays.
   final Failure? loadMoreFailure;
 
   final bool isSending;

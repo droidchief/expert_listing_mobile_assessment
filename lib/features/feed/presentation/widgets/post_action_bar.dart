@@ -13,12 +13,6 @@ import '../../../comments/presentation/widgets/comments_sheet.dart';
 import '../../data/models/post.dart';
 import '../cubit/feed_cubit.dart';
 
-/// Like / comment / share, then a spacer, then views and bookmark.
-///
-/// Like and comment are wired to the API (like optimistic via `FeedCubit`,
-/// comments via their own sheet + `CommentsCubit`); share opens the OS share
-/// sheet with a placeholder message and link (no real deep link exists yet);
-/// bookmark is local UI-only state, not persisted or sent to the API.
 class PostActionBar extends StatelessWidget {
   const PostActionBar({super.key, required this.post});
 
@@ -78,9 +72,6 @@ class PostActionBar extends StatelessWidget {
   }
 }
 
-/// Local-only bookmark toggle — turns `primaryText` green when active, with
-/// no backing API call and no count. Purely ephemeral UI state, so a
-/// `StatefulWidget` is correct here; it starts unbookmarked on every build.
 class _BookmarkButton extends StatefulWidget {
   const _BookmarkButton();
 
@@ -104,10 +95,6 @@ class _BookmarkButtonState extends State<_BookmarkButton> {
   }
 }
 
-/// The heart button: mirrors `AppIconButton`'s layout (44x44 tap target,
-/// same icon size, `CountText`) but adds a brief 1.0 → 1.25 → 1.0 scale
-/// bump whenever `hasLiked` flips, in either direction. Purely a local
-/// ephemeral animation, so a `StatefulWidget` is correct here.
 class _LikeButton extends StatefulWidget {
   const _LikeButton({required this.post});
 
@@ -142,8 +129,6 @@ class _LikeButtonState extends State<_LikeButton> {
       label: likes > 0 ? 'Like, $likes' : 'Like',
       child: InkWell(
         onTap: () {
-          // Only the like transition gets a haptic bump — unliking stays
-          // silent.
           if (!hasLiked) HapticFeedback.heavyImpact();
           context.read<FeedCubit>().toggleLike(widget.post.id);
         },
