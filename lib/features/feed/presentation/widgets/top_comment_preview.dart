@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../comments/presentation/widgets/comments_sheet.dart';
 import '../../data/models/post.dart';
+import '../cubit/feed_cubit.dart';
 
 /// Username and comment body on one wrapping line, plus a "View all N
 /// comments" link. Hidden entirely when the post has no `topComment`.
@@ -43,11 +46,23 @@ class TopCommentPreview extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           if (post.counts.comments > 1)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.xs),
-              child: Text(
-                'View all ${post.counts.comments} comments',
-                style: AppTypography.linkLabel,
+            GestureDetector(
+              onTap: () {
+                final feedCubit = context.read<FeedCubit>();
+                showCommentsSheet(
+                  context,
+                  postId: post.id,
+                  initialCommentCount: post.counts.comments,
+                  onCommentCountChanged: (count) =>
+                      feedCubit.updateCommentCount(post.id, count),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                child: Text(
+                  'View all ${post.counts.comments} comments',
+                  style: AppTypography.linkLabel,
+                ),
               ),
             ),
         ],
